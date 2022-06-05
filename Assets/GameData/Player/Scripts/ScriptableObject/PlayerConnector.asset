@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: PlayerConnector
   m_EditorClassIdentifier: 
   movementRaw: {x: 0, y: 0}
-  speed: 5
+  speed: 2

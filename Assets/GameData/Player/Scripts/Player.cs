@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using Cinemachine;
 
 [RequireComponent(typeof(InputManager))]
 public class Player : MonoBehaviour
@@ -17,13 +13,22 @@ public class Player : MonoBehaviour
 
     CharacterController characterController;
     [SerializeField] Camera playerCam;
-    [SerializeField] CinemachineVirtualCamera freelookCam;
+
+    #endregion
+
+    #region Animations
+
+    Animator animController;
+
+    int animMovementXHash = Animator.StringToHash("MovementX");
+    int animMovementYHash = Animator.StringToHash("MovementY");
 
     #endregion
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+        animController = GetComponent<Animator>();
     }
 
     private void Update()
@@ -45,12 +50,14 @@ public class Player : MonoBehaviour
     {
         float x = playerConnector.movementRaw.x;
         float y = playerConnector.movementRaw.y;
+        animController.SetFloat(animMovementXHash, x);
+        animController.SetFloat(animMovementYHash, y);
 
-        Vector3 movementInput = transform.right * x + transform.forward * y;
+        Vector3 movementInput = (transform.right * x) + (transform.forward * y);
 
         if (movementInput.magnitude >= Mathf.Epsilon)
         {
-            characterController.Move(movementInput * playerConnector.speed * Time.deltaTime);
+            characterController.Move(movementInput.normalized * playerConnector.speed * Time.deltaTime);
         }
     }
 
@@ -65,6 +72,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Function that makes the player rotation match the camera rotation meaning the player will look where the camera is pointing
+    /// </summary>
     private void CameraRotationMatching()
     {
         Quaternion newPlayerRot = playerCam.transform.rotation;
