@@ -11,4 +11,24 @@ public class PlayerConnector : ScriptableObject
     public float speed = 10f;
 
     #endregion
+
+    #region AnimHashes
+
+    public readonly int animMovementXHash = Animator.StringToHash("MovementX");
+    public readonly int animMovementYHash = Animator.StringToHash("MovementY");
+
+    #endregion
+
+    #region State Machine
+
+    public PlayerState playerState;
+    public PlayerStates currentPlayerState;
+
+    #endregion
+
+    private void Awake()
+    {
+        playerState = PlayerState.Idle;
+        
+    }
 }

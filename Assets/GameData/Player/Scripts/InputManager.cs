@@ -9,22 +9,30 @@ public class InputManager : MonoBehaviour
 
     [SerializeField] PlayerConnector playerConnector;
     PlayerControls playerControls;
-    Player player;
 
     #endregion
 
     private void OnEnable()
     {
-        player = GetComponent<Player>();
+        //Input Manager Initialisation
         playerControls = new PlayerControls();
         playerControls.Enable();
 
+        //Player Movement Controls
+        playerControls.Game.Movement.performed += ctx => playerConnector.currentPlayerState.Movement();
         playerControls.Game.Movement.performed += ctx => playerConnector.movementRaw = ctx.ReadValue<Vector2>();
         playerControls.Game.Movement.canceled += ctx => playerConnector.movementRaw = new Vector2();
     }
 
     private void OnDisable()
     {
+        //Input Manager Deactivation
         playerControls.Disable();
+
+        //Player Movement Controls
+        playerControls.Game.Movement.performed -= ctx => playerConnector.currentPlayerState.Movement();
+        playerControls.Game.Movement.performed -= ctx => playerConnector.movementRaw = ctx.ReadValue<Vector2>();
+        playerControls.Game.Movement.canceled -= ctx => playerConnector.movementRaw = new Vector2();
     }
+
 }
