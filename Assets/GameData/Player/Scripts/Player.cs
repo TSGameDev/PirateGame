@@ -49,4 +49,5 @@ public class Player : MonoBehaviour
             characterController.Move(Physics.gravity * Time.deltaTime);
         }
     }
+
 }
