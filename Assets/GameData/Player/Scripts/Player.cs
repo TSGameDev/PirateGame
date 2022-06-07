@@ -3,7 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(InputManager))]
 public class Player : MonoBehaviour
 {
-
     #region Dependancies
 
     public PlayerConnector playerConnector;
@@ -13,7 +12,7 @@ public class Player : MonoBehaviour
     #region Movement Variables
 
     public CharacterController characterController;
-    [SerializeField] Camera playerCam;
+    public Camera playerCam;
 
     #endregion
 
@@ -33,7 +32,6 @@ public class Player : MonoBehaviour
     private void Update()
     {
         playerConnector.currentPlayerState.Update();
-        CameraRotationMatching();
     }
 
     private void FixedUpdate()
@@ -50,16 +48,5 @@ public class Player : MonoBehaviour
         {
             characterController.Move(Physics.gravity * Time.deltaTime);
         }
-    }
-
-    /// <summary>
-    /// Function that makes the player rotation match the camera rotation meaning the player will look where the camera is pointing
-    /// </summary>
-    private void CameraRotationMatching()
-    {
-        Quaternion newPlayerRot = playerCam.transform.rotation;
-        newPlayerRot.x = 0;
-        newPlayerRot.z = 0;
-        transform.rotation = newPlayerRot;
     }
 }
