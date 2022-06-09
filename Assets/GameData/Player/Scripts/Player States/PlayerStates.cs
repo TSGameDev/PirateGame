@@ -3,7 +3,9 @@ using UnityEngine;
 public enum PlayerState
 {
     Idle,
-    Walking
+    Walking,
+    Running,
+    Sprinting
 }
 
 public abstract class PlayerStates
@@ -47,7 +49,13 @@ public abstract class PlayerStates
     /// <summary>
     /// The base camera rotation function decleration which all other states rely on, needs to be in all states to stop errors even if there is no functionality for it in the called state.
     /// </summary>
-    public virtual void CameraRotationMatching() { }
+    public virtual void CameraRotationMatching() 
+    {
+        Quaternion newPlayerRot = player.playerCam.transform.rotation;
+        newPlayerRot.x = 0;
+        newPlayerRot.z = 0;
+        player.transform.rotation = newPlayerRot;
+    }
 }
 
 public class PlayerIdleState : PlayerStates
@@ -63,7 +71,10 @@ public class PlayerIdleState : PlayerStates
     /// </summary>
     public override void Movement()
     {
-        ChangePlayerState(PlayerState.Walking);
+        if (playerConnector.walkMode)
+            ChangePlayerState(PlayerState.Walking);
+        else
+            ChangePlayerState(PlayerState.Running);
     }
 
     /// <summary>
@@ -78,6 +89,16 @@ public class PlayerIdleState : PlayerStates
                 playerConnector.playerState = PlayerState.Walking;
                 playerConnector.currentPlayerState = new PlayerWalkingState(player);
                 Debug.Log("Changed Player State to Walking");
+                break;
+           case PlayerState.Running:
+                playerConnector.playerState = PlayerState.Running;
+                playerConnector.currentPlayerState = new PlayerRunningState(player);
+                Debug.Log("Change Player State to Running");
+                break;
+            case PlayerState.Sprinting:
+                playerConnector.playerState = PlayerState.Sprinting;
+                playerConnector.currentPlayerState = new PlayerSprintingState(player);
+                Debug.Log("Change Player State to Sprinting");
                 break;
         }
     }
@@ -108,15 +129,24 @@ public class PlayerWalkingState : PlayerStates
     /// </summary>
     public override void Movement()
     {
-        float x = playerConnector.movementRaw.x;
-        float y = playerConnector.movementRaw.y;
-        animController.SetFloat(playerConnector.animMovementXHash, x);
-        animController.SetFloat(playerConnector.animMovementYHash, y);
+        if (!playerConnector.walkMode)
+        {
+            ChangePlayerState(PlayerState.Running);
+            return;
+        }
 
-        Vector3 movementInput = (player.transform.right * x) + (player.transform.forward * y);
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+
+        animController.SetBool(playerConnector.animWalkBool, playerConnector.walkMode);
+        animController.SetBool(playerConnector.animSprintBool, playerConnector.sprintMode);
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
         if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput.normalized * playerConnector.speed * Time.deltaTime);
+                player.characterController.Move(movementInput.normalized * playerConnector.speed * Time.deltaTime);
         else
             ChangePlayerState(PlayerState.Idle);
     }
@@ -126,10 +156,7 @@ public class PlayerWalkingState : PlayerStates
     /// </summary>
     public override void CameraRotationMatching()
     {
-        Quaternion newPlayerRot = player.playerCam.transform.rotation;
-        newPlayerRot.x = 0;
-        newPlayerRot.z = 0;
-        player.transform.rotation = newPlayerRot;
+        base.CameraRotationMatching();
     }
 
     /// <summary>
@@ -144,6 +171,154 @@ public class PlayerWalkingState : PlayerStates
                 playerConnector.playerState = PlayerState.Idle;
                 playerConnector.currentPlayerState = new PlayerIdleState(player);
                 Debug.Log("Changed Player State to Idle");
+                break;
+            case PlayerState.Running:
+                playerConnector.playerState = PlayerState.Running;
+                playerConnector.currentPlayerState = new PlayerRunningState(player);
+                Debug.Log("Changed Player State to Running");
+                break;
+            case PlayerState.Sprinting:
+                playerConnector.playerState = PlayerState.Sprinting;
+                playerConnector.currentPlayerState = new PlayerSprintingState(player);
+                Debug.Log("Changed Player State to Sprinting");
+                break;
+        }
+    }
+
+}
+
+public class PlayerRunningState : PlayerStates
+{
+    public PlayerRunningState(Player player) : base(player) { }
+
+    public override void Update()
+    {
+        Movement();
+        CameraRotationMatching();
+    }
+
+    public override void Movement()
+    {
+        if (playerConnector.walkMode)
+        {
+            ChangePlayerState(PlayerState.Walking);
+            return;
+        }
+        else if(playerConnector.sprintMode && playerConnector.stamina > playerConnector.sprintingStaminaCost)
+        {
+            ChangePlayerState(PlayerState.Sprinting);
+            return;
+        }
+
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+
+        animController.SetBool(playerConnector.animWalkBool, playerConnector.walkMode);
+        animController.SetBool(playerConnector.animSprintBool, playerConnector.sprintMode);
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput.normalized * (playerConnector.speed * 2) * Time.deltaTime);
+        else
+            ChangePlayerState(PlayerState.Idle);
+    }
+
+    public override void CameraRotationMatching()
+    {
+        base.CameraRotationMatching();
+    }
+
+    public override void ChangePlayerState(PlayerState playerstate)
+    {
+        switch(playerstate)
+        {
+            case PlayerState.Idle:
+                playerConnector.playerState = PlayerState.Idle;
+                playerConnector.currentPlayerState = new PlayerIdleState(player);
+                Debug.Log("Changed Player State to Idle");
+                break;
+            case PlayerState.Walking:
+                playerConnector.playerState = PlayerState.Walking;
+                playerConnector.currentPlayerState = new PlayerWalkingState(player);
+                Debug.Log("Changed Player State to Walking");
+                break;
+            case PlayerState.Sprinting:
+                playerConnector.playerState = PlayerState.Sprinting;
+                playerConnector.currentPlayerState = new PlayerSprintingState(player);
+                Debug.Log("Changed Player State to Sprinting");
+                break;
+        }
+    }
+
+}
+
+public class PlayerSprintingState : PlayerStates
+{
+    public PlayerSprintingState(Player player) : base(player) { }
+
+    public override void Update()
+    {
+        Movement();
+        CameraRotationMatching();
+    }
+
+    public override void Movement()
+    {
+        if (playerConnector.walkMode)
+        {
+            ChangePlayerState(PlayerState.Walking);
+            return;
+        }
+        else if (!playerConnector.sprintMode && playerConnector.stamina > Mathf.Epsilon)
+        {
+            ChangePlayerState(PlayerState.Running);
+            return;
+        }
+
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+
+        animController.SetBool(playerConnector.animSprintBool, playerConnector.sprintMode);
+        animController.SetBool(playerConnector.animWalkBool, playerConnector.walkMode);
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput.normalized * (playerConnector.speed * 2.5f) * Time.deltaTime);
+        else
+            ChangePlayerState(PlayerState.Idle);
+
+        playerConnector.stamina =- playerConnector.sprintingStaminaCost * Time.deltaTime;
+    }
+
+    public override void CameraRotationMatching()
+    {
+        base.CameraRotationMatching();
+    }
+
+    public override void ChangePlayerState(PlayerState playerstate)
+    {
+        switch(playerstate)
+        {
+            case PlayerState.Idle:
+                playerConnector.playerState = PlayerState.Idle;
+                playerConnector.currentPlayerState = new PlayerIdleState(player);
+                Debug.Log("Changed Player State to Idle");
+                break;
+            case PlayerState.Running:
+                playerConnector.playerState = PlayerState.Running;
+                playerConnector.currentPlayerState = new PlayerRunningState(player);
+                Debug.Log("Changed Player State to Running");
+                break;
+            case PlayerState.Walking:
+                playerConnector.playerState = PlayerState.Walking;
+                playerConnector.currentPlayerState = new PlayerWalkingState(player);
+                Debug.Log("Changed Player State to Sprinting");
                 break;
         }
     }

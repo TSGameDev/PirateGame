@@ -44,6 +44,24 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""WalkToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""fb1f78e1-a91d-4ed1-8cd6-ae280f976ecb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SprintToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""9f99e995-80c2-4da9-ad24-77619134b395"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -61,7 +79,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Movement"",
                     ""id"": ""d09e9d8f-4296-49a4-9aaa-79b47e8b621a"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -112,6 +130,28 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0f0f8e4b-987b-41ff-b30a-3dbc7c01fd9d"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WalkToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e9b06d9b-305c-4170-b182-00886c2d0314"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SprintToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -122,6 +162,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_MouseDelta = m_Game.FindAction("MouseDelta", throwIfNotFound: true);
         m_Game_Movement = m_Game.FindAction("Movement", throwIfNotFound: true);
+        m_Game_WalkToggle = m_Game.FindAction("WalkToggle", throwIfNotFound: true);
+        m_Game_SprintToggle = m_Game.FindAction("SprintToggle", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -183,12 +225,16 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private IGameActions m_GameActionsCallbackInterface;
     private readonly InputAction m_Game_MouseDelta;
     private readonly InputAction m_Game_Movement;
+    private readonly InputAction m_Game_WalkToggle;
+    private readonly InputAction m_Game_SprintToggle;
     public struct GameActions
     {
         private @PlayerControls m_Wrapper;
         public GameActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @MouseDelta => m_Wrapper.m_Game_MouseDelta;
         public InputAction @Movement => m_Wrapper.m_Game_Movement;
+        public InputAction @WalkToggle => m_Wrapper.m_Game_WalkToggle;
+        public InputAction @SprintToggle => m_Wrapper.m_Game_SprintToggle;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -204,6 +250,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Movement.started -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
+                @WalkToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
+                @WalkToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
+                @WalkToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
+                @SprintToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
+                @SprintToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
+                @SprintToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -214,6 +266,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @WalkToggle.started += instance.OnWalkToggle;
+                @WalkToggle.performed += instance.OnWalkToggle;
+                @WalkToggle.canceled += instance.OnWalkToggle;
+                @SprintToggle.started += instance.OnSprintToggle;
+                @SprintToggle.performed += instance.OnSprintToggle;
+                @SprintToggle.canceled += instance.OnSprintToggle;
             }
         }
     }
@@ -222,5 +280,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     {
         void OnMouseDelta(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
+        void OnWalkToggle(InputAction.CallbackContext context);
+        void OnSprintToggle(InputAction.CallbackContext context);
     }
 }
