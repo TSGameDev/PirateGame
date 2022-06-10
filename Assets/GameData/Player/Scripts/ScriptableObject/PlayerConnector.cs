@@ -34,6 +34,7 @@ public class PlayerConnector : ScriptableObject
 
     public bool walkMode;
     public bool sprintMode;
+    public bool crouchMode;
     public Vector2 movementRaw;
     public float speed = 10f;
 
@@ -43,6 +44,7 @@ public class PlayerConnector : ScriptableObject
     
     public readonly int animWalkBool = Animator.StringToHash("WalkToggle");
     public readonly int animSprintBool = Animator.StringToHash("SprintToggle");
+    public readonly int animCrouchBool = Animator.StringToHash("CrouchToggle");
     public readonly int animMovementXHash = Animator.StringToHash("MovementX");
     public readonly int animMovementYHash = Animator.StringToHash("MovementY");
 

@@ -5,7 +5,8 @@ public enum PlayerState
     Idle,
     Walking,
     Running,
-    Sprinting
+    Sprinting,
+    Crouching
 }
 
 public abstract class PlayerStates
@@ -29,6 +30,11 @@ public abstract class PlayerStates
         playerConnector = player.playerConnector;
         animController = player.animController;
     }
+
+    /// <summary>
+    /// Function to perform all starting functionality for the state like turning animations on and others off.
+    /// </summary>
+    public virtual void Init() { }
 
     /// <summary>
     /// The base change player state function decleration which all other states rely on, needs to be in all states to stop errors even if there is no functionality for it in the called state.
@@ -73,6 +79,8 @@ public class PlayerIdleState : PlayerStates
     {
         if (playerConnector.walkMode)
             ChangePlayerState(PlayerState.Walking);
+        else if (playerConnector.crouchMode)
+            ChangePlayerState(PlayerState.Crouching);
         else
             ChangePlayerState(PlayerState.Running);
     }
@@ -90,7 +98,12 @@ public class PlayerIdleState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerWalkingState(player);
                 Debug.Log("Changed Player State to Walking");
                 break;
-           case PlayerState.Running:
+            case PlayerState.Crouching:
+                playerConnector.playerState = PlayerState.Crouching;
+                playerConnector.currentPlayerState = new PlayerCrouchingState(player);
+                Debug.Log("Change Player State to Crouching");
+                break;
+            case PlayerState.Running:
                 playerConnector.playerState = PlayerState.Running;
                 playerConnector.currentPlayerState = new PlayerRunningState(player);
                 Debug.Log("Change Player State to Running");
@@ -101,6 +114,7 @@ public class PlayerIdleState : PlayerStates
                 Debug.Log("Change Player State to Sprinting");
                 break;
         }
+        playerConnector.currentPlayerState.Init();
     }
 
 }
@@ -112,6 +126,16 @@ public class PlayerWalkingState : PlayerStates
     /// </summary>
     /// <param name="player">The monobehaviour player script that holds the declearation of the state machine</param>
     public PlayerWalkingState(Player player) : base(player) { }
+
+    /// <summary>
+    /// Function that perform inisilisation functionality for this state
+    /// </summary>
+    public override void Init()
+    {
+        animController.SetBool(playerConnector.animWalkBool, true);
+        animController.SetBool(playerConnector.animSprintBool, false);
+        animController.SetBool(playerConnector.animCrouchBool, false);
+    }
 
     /// <summary>
     /// A function that represent the Update function of Monobehaviours by having this state function called on the monohaviour player script in the Update function.
@@ -140,8 +164,6 @@ public class PlayerWalkingState : PlayerStates
 
         Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
 
-        animController.SetBool(playerConnector.animWalkBool, playerConnector.walkMode);
-        animController.SetBool(playerConnector.animSprintBool, playerConnector.sprintMode);
         animController.SetFloat(playerConnector.animMovementXHash, rawX);
         animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
@@ -172,6 +194,11 @@ public class PlayerWalkingState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerIdleState(player);
                 Debug.Log("Changed Player State to Idle");
                 break;
+            case PlayerState.Crouching:
+                playerConnector.playerState = PlayerState.Crouching;
+                playerConnector.currentPlayerState = new PlayerCrouchingState(player);
+                Debug.Log("Changed Player State to Crouching");
+                break;
             case PlayerState.Running:
                 playerConnector.playerState = PlayerState.Running;
                 playerConnector.currentPlayerState = new PlayerRunningState(player);
@@ -183,20 +210,41 @@ public class PlayerWalkingState : PlayerStates
                 Debug.Log("Changed Player State to Sprinting");
                 break;
         }
+        playerConnector.currentPlayerState.Init();
     }
 
 }
 
 public class PlayerRunningState : PlayerStates
 {
+    /// <summary>
+    /// Constructor for this state gather from the base blueprint class PlayerStates
+    /// </summary>
+    /// <param name="player">Reference to the player to fill variables</param>
     public PlayerRunningState(Player player) : base(player) { }
 
+    /// <summary>
+    /// Function that perform inisilisation functionality for this state
+    /// </summary>
+    public override void Init()
+    {
+        animController.SetBool(playerConnector.animWalkBool, false);
+        animController.SetBool(playerConnector.animSprintBool, false);
+        animController.SetBool(playerConnector.animCrouchBool, false);
+    }
+
+    /// <summary>
+    /// Update method that is used to provide continous functionality within the state machine. Is called on the Monobehaviour player script.
+    /// </summary>
     public override void Update()
     {
         Movement();
         CameraRotationMatching();
     }
 
+    /// <summary>
+    /// Movement function that is used to provid movement functionlaity when in this state if it is applicable.
+    /// </summary>
     public override void Movement()
     {
         if (playerConnector.walkMode)
@@ -209,14 +257,17 @@ public class PlayerRunningState : PlayerStates
             ChangePlayerState(PlayerState.Sprinting);
             return;
         }
+        else if(playerConnector.crouchMode)
+        {
+            ChangePlayerState(PlayerState.Crouching);
+            return;
+        }
 
         float rawX = playerConnector.movementRaw.x;
         float rawY = playerConnector.movementRaw.y;
 
         Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
 
-        animController.SetBool(playerConnector.animWalkBool, playerConnector.walkMode);
-        animController.SetBool(playerConnector.animSprintBool, playerConnector.sprintMode);
         animController.SetFloat(playerConnector.animMovementXHash, rawX);
         animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
@@ -226,11 +277,19 @@ public class PlayerRunningState : PlayerStates
             ChangePlayerState(PlayerState.Idle);
     }
 
+    /// <summary>
+    /// Camera Rotation function that makes the player model match the camera rotation. used to provide a better movement feel for states with movement.
+    /// The functionlaity is the same for all states so the script is defined in the base PlayerStates class.
+    /// </summary>
     public override void CameraRotationMatching()
     {
         base.CameraRotationMatching();
     }
 
+    /// <summary>
+    /// Function to transition between playerstates performing the required functionlaity for each possible state. Also limits what states transition into what state.
+    /// </summary>
+    /// <param name="playerstate">the player state you wish to transition into</param>
     public override void ChangePlayerState(PlayerState playerstate)
     {
         switch(playerstate)
@@ -245,26 +304,52 @@ public class PlayerRunningState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerWalkingState(player);
                 Debug.Log("Changed Player State to Walking");
                 break;
+            case PlayerState.Crouching:
+                playerConnector.playerState = PlayerState.Crouching;
+                playerConnector.currentPlayerState = new PlayerCrouchingState(player);
+                Debug.Log("Changed Player State to Crouching");
+                break;
             case PlayerState.Sprinting:
                 playerConnector.playerState = PlayerState.Sprinting;
                 playerConnector.currentPlayerState = new PlayerSprintingState(player);
                 Debug.Log("Changed Player State to Sprinting");
                 break;
         }
+        playerConnector.currentPlayerState.Init();
     }
 
 }
 
 public class PlayerSprintingState : PlayerStates
 {
+    /// <summary>
+    /// Constructor for this state gather from the base blueprint class PlayerStates
+    /// </summary>
+    /// <param name="player">Reference to the player to fill variables</param>
     public PlayerSprintingState(Player player) : base(player) { }
 
+    /// <summary>
+    /// Function that perform inisilisation functionality for this state
+    /// </summary>
+    public override void Init()
+    {
+        animController.SetBool(playerConnector.animWalkBool, false);
+        animController.SetBool(playerConnector.animSprintBool, true);
+        animController.SetBool(playerConnector.animCrouchBool, false);
+    }
+
+    /// <summary>
+    /// Update method that is used to provide continous functionality within the state machine. Is called on the Monobehaviour player script.
+    /// </summary>
     public override void Update()
     {
         Movement();
         CameraRotationMatching();
     }
 
+    /// <summary>
+    /// Movement function that is used to provid movement functionlaity when in this state if it is applicable.
+    /// </summary>
     public override void Movement()
     {
         if (playerConnector.walkMode)
@@ -283,8 +368,6 @@ public class PlayerSprintingState : PlayerStates
 
         Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
 
-        animController.SetBool(playerConnector.animSprintBool, playerConnector.sprintMode);
-        animController.SetBool(playerConnector.animWalkBool, playerConnector.walkMode);
         animController.SetFloat(playerConnector.animMovementXHash, rawX);
         animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
@@ -296,11 +379,19 @@ public class PlayerSprintingState : PlayerStates
         playerConnector.stamina =- playerConnector.sprintingStaminaCost * Time.deltaTime;
     }
 
+    /// <summary>
+    /// Camera Rotation function that makes the player model match the camera rotation. used to provide a better movement feel for states with movement.
+    /// The functionlaity is the same for all states so the script is defined in the base PlayerStates class.
+    /// </summary>
     public override void CameraRotationMatching()
     {
         base.CameraRotationMatching();
     }
 
+    /// <summary>
+    /// Function to transition between playerstates performing the required functionlaity for each possible state. Also limits what states transition into what state.
+    /// </summary>
+    /// <param name="playerstate">the player state you wish to transition into</param>
     public override void ChangePlayerState(PlayerState playerstate)
     {
         switch(playerstate)
@@ -321,6 +412,101 @@ public class PlayerSprintingState : PlayerStates
                 Debug.Log("Changed Player State to Sprinting");
                 break;
         }
+        playerConnector.currentPlayerState.Init();
+    }
+
+}
+
+public class PlayerCrouchingState : PlayerStates
+{
+    /// <summary>
+    /// Constructor for this state gather from the base blueprint class PlayerStates
+    /// </summary>
+    /// <param name="player">Reference to the player to fill variables</param>
+    public PlayerCrouchingState(Player player) : base(player) { }
+
+    /// <summary>
+    /// Function that perform inisilisation functionality for this state
+    /// </summary>
+    public override void Init()
+    {
+        animController.SetBool(playerConnector.animWalkBool, false);
+        animController.SetBool(playerConnector.animSprintBool, false);
+        animController.SetBool(playerConnector.animCrouchBool, true);
+    }
+
+    /// <summary>
+    /// Update method that is used to provide continous functionality within the state machine. Is called on the Monobehaviour player script.
+    /// </summary>
+    public override void Update()
+    {
+        Movement();
+        CameraRotationMatching();
+    }
+
+    /// <summary>
+    /// Movement function that is used to provid movement functionlaity when in this state if it is applicable.
+    /// </summary>
+    public override void Movement()
+    {
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+
+        if (!playerConnector.crouchMode)
+        {
+            if (playerConnector.walkMode)
+                ChangePlayerState(PlayerState.Walking);
+            else if (movementInput.magnitude >= Mathf.Epsilon)
+                ChangePlayerState(PlayerState.Running);
+            else
+                ChangePlayerState(PlayerState.Idle);
+
+            return;
+        }
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput.normalized * playerConnector.speed * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// Camera Rotation function that makes the player model match the camera rotation. used to provide a better movement feel for states with movement.
+    /// The functionlaity is the same for all states so the script is defined in the base PlayerStates class.
+    /// </summary>
+    public override void CameraRotationMatching()
+    {
+        base.CameraRotationMatching(); ;
+    }
+
+    /// <summary>
+    /// Function to transition between playerstates performing the required functionlaity for each possible state. Also limits what states transition into what state.
+    /// </summary>
+    /// <param name="playerstate">the player state you wish to transition into</param>
+    public override void ChangePlayerState(PlayerState playerstate)
+    {
+        switch(playerstate)
+        {
+            case PlayerState.Idle:
+                playerConnector.playerState = PlayerState.Idle;
+                playerConnector.currentPlayerState = new PlayerIdleState(player);
+                Debug.Log("Changed Player State to Idle");
+                break;
+            case PlayerState.Walking:
+                playerConnector.playerState = PlayerState.Walking;
+                playerConnector.currentPlayerState = new PlayerWalkingState(player);
+                Debug.Log("Changed Player State to Walking");
+                break;
+            case PlayerState.Running:
+                playerConnector.playerState = PlayerState.Running;
+                playerConnector.currentPlayerState = new PlayerRunningState(player);
+                Debug.Log("Changed Player State to Running");
+                break;
+        }
+        playerConnector.currentPlayerState.Init();
     }
 
 }

@@ -62,6 +62,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CrouchToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""a734ac92-e89b-42be-9023-02d2978b5e47"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +161,17 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""SprintToggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a871609b-9767-43c5-9795-45ce2b45da19"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CrouchToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -164,6 +184,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Game_Movement = m_Game.FindAction("Movement", throwIfNotFound: true);
         m_Game_WalkToggle = m_Game.FindAction("WalkToggle", throwIfNotFound: true);
         m_Game_SprintToggle = m_Game.FindAction("SprintToggle", throwIfNotFound: true);
+        m_Game_CrouchToggle = m_Game.FindAction("CrouchToggle", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -227,6 +248,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_Movement;
     private readonly InputAction m_Game_WalkToggle;
     private readonly InputAction m_Game_SprintToggle;
+    private readonly InputAction m_Game_CrouchToggle;
     public struct GameActions
     {
         private @PlayerControls m_Wrapper;
@@ -235,6 +257,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Game_Movement;
         public InputAction @WalkToggle => m_Wrapper.m_Game_WalkToggle;
         public InputAction @SprintToggle => m_Wrapper.m_Game_SprintToggle;
+        public InputAction @CrouchToggle => m_Wrapper.m_Game_CrouchToggle;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -256,6 +279,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @SprintToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
                 @SprintToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
                 @SprintToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
+                @CrouchToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
+                @CrouchToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
+                @CrouchToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -272,6 +298,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @SprintToggle.started += instance.OnSprintToggle;
                 @SprintToggle.performed += instance.OnSprintToggle;
                 @SprintToggle.canceled += instance.OnSprintToggle;
+                @CrouchToggle.started += instance.OnCrouchToggle;
+                @CrouchToggle.performed += instance.OnCrouchToggle;
+                @CrouchToggle.canceled += instance.OnCrouchToggle;
             }
         }
     }
@@ -282,5 +311,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnWalkToggle(InputAction.CallbackContext context);
         void OnSprintToggle(InputAction.CallbackContext context);
+        void OnCrouchToggle(InputAction.CallbackContext context);
     }
 }
