@@ -31,6 +31,9 @@ public class InputManager : MonoBehaviour
         playerControls.Game.CrouchToggle.performed += ctx => playerConnector.currentPlayerState.Movement();
         playerControls.Game.CrouchToggle.performed += ctx => playerConnector.crouchMode = true;
         playerControls.Game.CrouchToggle.canceled += ctx => playerConnector.crouchMode = false;
+
+        //Player Jump Control
+        playerControls.Game.Jumping.performed += ctx => playerConnector.currentPlayerState.Jump();
     }
 
     private void OnDisable()

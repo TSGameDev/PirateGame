@@ -6,7 +6,9 @@ public enum PlayerState
     Walking,
     Running,
     Sprinting,
-    Crouching
+    Crouching,
+    Jump,
+    Falling
 }
 
 public abstract class PlayerStates
@@ -20,6 +22,14 @@ public abstract class PlayerStates
 
     #endregion
 
+    #region Gravity Variables
+
+    protected float currentGravity;
+    protected Vector3 gravityDirection;
+    protected Vector3 gravityMovement;
+
+    #endregion
+
     /// <summary>
     /// The base constructor that fills the required variables that all other state constructors rely on.
     /// </summary>
@@ -29,6 +39,8 @@ public abstract class PlayerStates
         this.player = player;
         playerConnector = player.playerConnector;
         animController = player.animController;
+
+        gravityDirection = Vector3.down;
     }
 
     /// <summary>
@@ -45,12 +57,40 @@ public abstract class PlayerStates
     /// <summary>
     /// The base Update function decleration which all other states rely on, needs to be in all states to stop errors even if there is no functionality for it in the called state.
     /// </summary>
-    public virtual void Update() { }
+    public virtual void Update() 
+    {
+        Gravity();
+        Movement();
+        CameraRotationMatching();
+    }
 
     /// <summary>
     ///The base movement function decleration which all other states rely on, needs to be in all states to stop errors even if there is no functionality for it in the called state. 
     /// </summary>
-    public virtual void Movement() { }
+    public virtual void Movement() 
+    {
+        float speed;
+        if (playerConnector.walkMode || playerConnector.crouchMode)
+            speed = playerConnector.walkSpeed;
+        else if (playerConnector.sprintMode)
+            speed = playerConnector.sprintSpeed;
+        else
+            speed = playerConnector.runSpeed;
+
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movementInput = movementInput.normalized * speed * Time.deltaTime;
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput + gravityMovement);
+        else
+            ChangePlayerState(PlayerState.Idle);
+    }
 
     /// <summary>
     /// The base camera rotation function decleration which all other states rely on, needs to be in all states to stop errors even if there is no functionality for it in the called state.
@@ -62,6 +102,52 @@ public abstract class PlayerStates
         newPlayerRot.z = 0;
         player.transform.rotation = newPlayerRot;
     }
+
+    /// <summary>
+    /// Function that checked to make sure the player is grounded to provide gravity functionlaity.
+    /// </summary>
+    /// <returns>Returns a bool, true if the player is grounded, false if the player is not.</returns>
+    public virtual bool IsGrounded()
+    {
+        return player.characterController.isGrounded;
+    }
+
+    /// <summary>
+    /// Function that provides gravity functionlaity depending on if the player is grounded or not.
+    /// </summary>
+    public virtual void Gravity()
+    {
+        if(IsGrounded() && !playerConnector.jumpingTriggered)
+        {
+            currentGravity = playerConnector.constantGravity;
+        }
+        else
+        {
+            if(currentGravity > playerConnector.maxGravity)
+            {
+                currentGravity -= playerConnector.gravity * Time.deltaTime;
+            }
+        }
+
+        gravityMovement = gravityDirection * -currentGravity * Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Transitions into jump state to perform jump activation via init function
+    /// </summary>
+    public virtual void Jump() 
+    {
+        ChangePlayerState(PlayerState.Jump);
+    }
+
+    /// <summary>
+    /// Function that is triggered by anim event to applys the force of jumping to player
+    /// </summary>
+    public virtual void JumpForce() 
+    {
+        currentGravity = playerConnector.jumpForce;
+    }
+
 }
 
 public class PlayerIdleState : PlayerStates
@@ -71,6 +157,11 @@ public class PlayerIdleState : PlayerStates
     /// </summary>
     /// <param name="player">The monobehaviour player script that holds the declearation of the state machine</param>
     public PlayerIdleState(Player player) : base(player) { }
+
+    public override void Update()
+    {
+        
+    }
 
     /// <summary>
     /// Trigger by the input system to go into the walking state that provide the continous functionlaity for walking.
@@ -83,6 +174,11 @@ public class PlayerIdleState : PlayerStates
             ChangePlayerState(PlayerState.Crouching);
         else
             ChangePlayerState(PlayerState.Running);
+    }
+
+    public override void Jump()
+    {
+        base.Jump();
     }
 
     /// <summary>
@@ -112,6 +208,11 @@ public class PlayerIdleState : PlayerStates
                 playerConnector.playerState = PlayerState.Sprinting;
                 playerConnector.currentPlayerState = new PlayerSprintingState(player);
                 Debug.Log("Change Player State to Sprinting");
+                break;
+            case PlayerState.Jump:
+                playerConnector.playerState = PlayerState.Jump;
+                playerConnector.currentPlayerState = new PlayerJumpState(player);
+                Debug.Log("Change Player State to Jump");
                 break;
         }
         playerConnector.currentPlayerState.Init();
@@ -143,8 +244,7 @@ public class PlayerWalkingState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        Movement();
-        CameraRotationMatching();
+        base.Update();
     }
 
     /// <summary>
@@ -159,26 +259,12 @@ public class PlayerWalkingState : PlayerStates
             return;
         }
 
-        float rawX = playerConnector.movementRaw.x;
-        float rawY = playerConnector.movementRaw.y;
-
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-
-        animController.SetFloat(playerConnector.animMovementXHash, rawX);
-        animController.SetFloat(playerConnector.animMovementYHash, rawY);
-
-        if (movementInput.magnitude >= Mathf.Epsilon)
-                player.characterController.Move(movementInput.normalized * playerConnector.speed * Time.deltaTime);
-        else
-            ChangePlayerState(PlayerState.Idle);
+        base.Movement();
     }
 
-    /// <summary>
-    /// Function that makes the player rotation match the camera rotation meaning the player will look where the camera is pointing
-    /// </summary>
-    public override void CameraRotationMatching()
+    public override void Jump()
     {
-        base.CameraRotationMatching();
+        base.Jump();
     }
 
     /// <summary>
@@ -209,6 +295,11 @@ public class PlayerWalkingState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerSprintingState(player);
                 Debug.Log("Changed Player State to Sprinting");
                 break;
+            case PlayerState.Jump:
+                playerConnector.playerState = PlayerState.Jump;
+                playerConnector.currentPlayerState = new PlayerJumpState(player);
+                Debug.Log("Change Player State to Jump");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
@@ -238,8 +329,7 @@ public class PlayerRunningState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        Movement();
-        CameraRotationMatching();
+        base.Update();
     }
 
     /// <summary>
@@ -252,7 +342,7 @@ public class PlayerRunningState : PlayerStates
             ChangePlayerState(PlayerState.Walking);
             return;
         }
-        else if(playerConnector.sprintMode && playerConnector.stamina > playerConnector.sprintingStaminaCost)
+        else if(playerConnector.sprintMode && playerConnector.stamina > playerConnector.sprintingStaminaStartCost)
         {
             ChangePlayerState(PlayerState.Sprinting);
             return;
@@ -263,27 +353,12 @@ public class PlayerRunningState : PlayerStates
             return;
         }
 
-        float rawX = playerConnector.movementRaw.x;
-        float rawY = playerConnector.movementRaw.y;
-
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-
-        animController.SetFloat(playerConnector.animMovementXHash, rawX);
-        animController.SetFloat(playerConnector.animMovementYHash, rawY);
-
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput.normalized * (playerConnector.speed * 2) * Time.deltaTime);
-        else
-            ChangePlayerState(PlayerState.Idle);
+        base.Movement();
     }
 
-    /// <summary>
-    /// Camera Rotation function that makes the player model match the camera rotation. used to provide a better movement feel for states with movement.
-    /// The functionlaity is the same for all states so the script is defined in the base PlayerStates class.
-    /// </summary>
-    public override void CameraRotationMatching()
+    public override void Jump()
     {
-        base.CameraRotationMatching();
+        base.Jump();
     }
 
     /// <summary>
@@ -314,6 +389,11 @@ public class PlayerRunningState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerSprintingState(player);
                 Debug.Log("Changed Player State to Sprinting");
                 break;
+            case PlayerState.Jump:
+                playerConnector.playerState = PlayerState.Jump;
+                playerConnector.currentPlayerState = new PlayerJumpState(player);
+                Debug.Log("Change Player State to Jump");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
@@ -343,8 +423,7 @@ public class PlayerSprintingState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        Movement();
-        CameraRotationMatching();
+        base.Update();
     }
 
     /// <summary>
@@ -363,29 +442,14 @@ public class PlayerSprintingState : PlayerStates
             return;
         }
 
-        float rawX = playerConnector.movementRaw.x;
-        float rawY = playerConnector.movementRaw.y;
+        base.Movement();
 
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-
-        animController.SetFloat(playerConnector.animMovementXHash, rawX);
-        animController.SetFloat(playerConnector.animMovementYHash, rawY);
-
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput.normalized * (playerConnector.speed * 2.5f) * Time.deltaTime);
-        else
-            ChangePlayerState(PlayerState.Idle);
-
-        playerConnector.stamina =- playerConnector.sprintingStaminaCost * Time.deltaTime;
+        playerConnector.stamina =- playerConnector.sprintingStaminaStartCost * Time.deltaTime;
     }
 
-    /// <summary>
-    /// Camera Rotation function that makes the player model match the camera rotation. used to provide a better movement feel for states with movement.
-    /// The functionlaity is the same for all states so the script is defined in the base PlayerStates class.
-    /// </summary>
-    public override void CameraRotationMatching()
+    public override void Jump()
     {
-        base.CameraRotationMatching();
+        base.Jump();
     }
 
     /// <summary>
@@ -410,6 +474,11 @@ public class PlayerSprintingState : PlayerStates
                 playerConnector.playerState = PlayerState.Walking;
                 playerConnector.currentPlayerState = new PlayerWalkingState(player);
                 Debug.Log("Changed Player State to Sprinting");
+                break;
+            case PlayerState.Jump:
+                playerConnector.playerState = PlayerState.Jump;
+                playerConnector.currentPlayerState = new PlayerJumpState(player);
+                Debug.Log("Change Player State to Jump");
                 break;
         }
         playerConnector.currentPlayerState.Init();
@@ -440,46 +509,7 @@ public class PlayerCrouchingState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        Movement();
-        CameraRotationMatching();
-    }
-
-    /// <summary>
-    /// Movement function that is used to provid movement functionlaity when in this state if it is applicable.
-    /// </summary>
-    public override void Movement()
-    {
-        float rawX = playerConnector.movementRaw.x;
-        float rawY = playerConnector.movementRaw.y;
-
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-
-        if (!playerConnector.crouchMode)
-        {
-            if (playerConnector.walkMode)
-                ChangePlayerState(PlayerState.Walking);
-            else if (movementInput.magnitude >= Mathf.Epsilon)
-                ChangePlayerState(PlayerState.Running);
-            else
-                ChangePlayerState(PlayerState.Idle);
-
-            return;
-        }
-
-        animController.SetFloat(playerConnector.animMovementXHash, rawX);
-        animController.SetFloat(playerConnector.animMovementYHash, rawY);
-
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput.normalized * playerConnector.speed * Time.deltaTime);
-    }
-
-    /// <summary>
-    /// Camera Rotation function that makes the player model match the camera rotation. used to provide a better movement feel for states with movement.
-    /// The functionlaity is the same for all states so the script is defined in the base PlayerStates class.
-    /// </summary>
-    public override void CameraRotationMatching()
-    {
-        base.CameraRotationMatching(); ;
+        base.Update();
     }
 
     /// <summary>
@@ -509,4 +539,36 @@ public class PlayerCrouchingState : PlayerStates
         playerConnector.currentPlayerState.Init();
     }
 
+}
+
+public class PlayerJumpState : PlayerStates
+{
+    public PlayerJumpState(Player player) : base(player) { }
+
+    public override void Init()
+    {
+        if (playerConnector.jumpingTriggered)
+            return;
+
+
+        animController.SetTrigger(playerConnector.animJumpHash);
+        playerConnector.jumpingTriggered = true;
+    }
+
+    public override void JumpForce()
+    {
+        base.JumpForce();
+        Debug.Log("Jump Force Called");
+    }
+
+}
+
+public class PlayerFallingState : PlayerStates
+{
+    public PlayerFallingState(Player player) : base(player) { }
+
+    public override void Init()
+    {
+        animController.SetTrigger(playerConnector.animFallingHash);
+    }
 }

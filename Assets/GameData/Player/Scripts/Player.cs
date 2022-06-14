@@ -34,20 +34,9 @@ public class Player : MonoBehaviour
         playerConnector.currentPlayerState.Update();
     }
 
-    private void FixedUpdate()
+    public void JumpForce()
     {
-        Gravity();
+        playerConnector.currentPlayerState.JumpForce();
     }
-
-    /// <summary>
-    /// Function implimenting gravity to the player as the character controller component isn't effected by natural gravity
-    /// </summary>
-    private void Gravity()
-    {
-        if (!characterController.isGrounded)
-        {
-            characterController.Move(Physics.gravity * Time.deltaTime);
-        }
-    }
-
 }
+

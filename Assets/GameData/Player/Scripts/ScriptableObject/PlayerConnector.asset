@@ -12,5 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3afbdddfb0b23944b972e41084be1355, type: 3}
   m_Name: PlayerConnector
   m_EditorClassIdentifier: 
+  stamina: 0
+  maxStamina: 100
+  sprintingStaminaStartCost: 10
+  walkMode: 0
+  sprintMode: 0
+  crouchMode: 0
   movementRaw: {x: 0, y: 0}
-  speed: 2
+  walkSpeed: 2
+  runSpeed: 5
+  sprintSpeed: 10
+  gravity: 9.81
+  constantGravity: -0.6
+  maxGravity: -9.81
+  fallingSpeed: 0
+  fallingThresHold: 0
+  jumpForce: 5
+  jumpingTriggered: 1
+  playerState: 5

@@ -8,45 +8,59 @@ public class PlayerConnector : ScriptableObject
 {
     #region Player Stats
 
-    public float stamina
-    {
-        get
-        {
-            return stamina;
-        }
-
-        set
-        {
-            if (value > maxStamina)
-                stamina = maxStamina;
-            else
-                stamina = value;
-        }
-    }
+    public float stamina;
 
     [Range(50, 200)]
     public float maxStamina = 100;
-    public float sprintingStaminaCost = 10;
+    public float sprintingStaminaStartCost = 10;
+
+    #endregion
+
+    #region Movement Flags
+
+    public bool walkMode = false;
+    public bool sprintMode = false;
+    public bool crouchMode = false;
 
     #endregion
 
     #region Movement Variables
 
-    public bool walkMode;
-    public bool sprintMode;
-    public bool crouchMode;
     public Vector2 movementRaw;
-    public float speed = 10f;
+    public float walkSpeed = 2f;
+    public float runSpeed = 5f;
+    public float sprintSpeed = 10f;
+
+    #endregion
+
+    #region Gravity Variables
+
+    public float gravity;
+    public float constantGravity;
+    public float maxGravity;
+
+    #endregion
+
+    #region Jumping / Falling
+
+    public float fallingSpeed;
+    public float fallingThresHold;
+    public float jumpForce;
+
+    public bool jumpingTriggered = false;
 
     #endregion
 
     #region AnimHashes
-    
+
     public readonly int animWalkBool = Animator.StringToHash("WalkToggle");
     public readonly int animSprintBool = Animator.StringToHash("SprintToggle");
     public readonly int animCrouchBool = Animator.StringToHash("CrouchToggle");
     public readonly int animMovementXHash = Animator.StringToHash("MovementX");
     public readonly int animMovementYHash = Animator.StringToHash("MovementY");
+    public readonly int animJumpHash = Animator.StringToHash("Jump");
+    public readonly int animFallingHash = Animator.StringToHash("Falling");
+    public readonly int animLandHash = Animator.StringToHash("Land");
 
     #endregion
 
