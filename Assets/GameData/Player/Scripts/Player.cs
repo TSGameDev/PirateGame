@@ -38,5 +38,10 @@ public class Player : MonoBehaviour
     {
         playerConnector.currentPlayerState.JumpForce();
     }
+
+    public void JumpFallingTransition()
+    {
+        playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Falling);
+    }
 }
 

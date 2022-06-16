@@ -22,6 +22,12 @@ public abstract class PlayerStates
 
     #endregion
 
+    #region Movement Variables
+
+    protected Vector3 movement;
+
+    #endregion
+
     #region Gravity Variables
 
     protected float currentGravity;
@@ -85,6 +91,19 @@ public abstract class PlayerStates
     }
 
     /// <summary>
+    /// Function that returns the bool for if the player si falling or not.
+    /// </summary>
+    /// <returns>A bool, true if the character is falling or false if they are not</returns>
+    public virtual bool IsFalling()
+    {
+        if(playerConnector.fallingSpeed < playerConnector.fallingThresHold)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Function that provides gravity functionlaity depending on if the player is grounded or not.
     /// </summary>
     public virtual void Gravity()
@@ -102,6 +121,31 @@ public abstract class PlayerStates
         }
 
         gravityMovement = gravityDirection * -currentGravity * Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Function that provides the falling functionality by changing state to falling state when certain conditions arise.
+    /// Also checks for landing for jumping and falling states.
+    /// </summary>
+    public virtual void Falling()
+    {
+        playerConnector.fallingSpeed = player.transform.InverseTransformDirection(player.characterController.velocity).y;
+
+        if (IsFalling() && !IsGrounded() && !playerConnector.jumpingTriggered && !playerConnector.fallingTriggered)
+        {
+            ChangePlayerState(PlayerState.Falling);
+        }
+
+        if(playerConnector.fallingTriggered && IsGrounded())
+        {
+            playerConnector.fallingTriggered = false;
+            playerConnector.jumpingTriggered = false;
+
+            if (movement.magnitude > Mathf.Epsilon)
+                ChangePlayerState(PlayerState.Running);
+            else
+                ChangePlayerState(PlayerState.Idle);
+        }
     }
 
     /// <summary>
@@ -124,6 +168,13 @@ public class PlayerIdleState : PlayerStates
     /// <param name="player">The monobehaviour player script that holds the declearation of the state machine</param>
     public PlayerIdleState(Player player) : base(player) { }
 
+    public override void Update()
+    {
+        Gravity();
+        Falling();
+        player.characterController.Move(gravityMovement);
+    }
+
     /// <summary>
     /// Trigger by the input system to go into the walking state that provide the continous functionlaity for walking.
     /// </summary>
@@ -135,6 +186,16 @@ public class PlayerIdleState : PlayerStates
             ChangePlayerState(PlayerState.Crouching);
         else
             ChangePlayerState(PlayerState.Running);
+    }
+
+    public override void Gravity()
+    {
+        base.Gravity();
+    }
+
+    public override void Falling()
+    {
+        base.Falling();
     }
 
     public override void Jump()
@@ -175,6 +236,12 @@ public class PlayerIdleState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerJumpState(player);
                 Debug.Log("Change Player State to Jump");
                 break;
+            case PlayerState.Falling:
+                playerConnector.playerState = PlayerState.Falling;
+                playerConnector.currentPlayerState = new PlayerFallingState(player);
+                Debug.Log("Change Player State to Falling");
+                break;
+
         }
         playerConnector.currentPlayerState.Init();
     }
@@ -206,6 +273,7 @@ public class PlayerWalkingState : PlayerStates
     public override void Update()
     {
         Gravity();
+        Falling();
         Movement();
         CameraRotationMatching();
     }
@@ -228,11 +296,11 @@ public class PlayerWalkingState : PlayerStates
         animController.SetFloat(playerConnector.animMovementXHash, rawX);
         animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-        movementInput = movementInput.normalized * playerConnector.walkSpeed * Time.deltaTime;
+        movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movement = movement.normalized * playerConnector.walkSpeed * Time.deltaTime;
 
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput + gravityMovement);
+        if (movement.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movement + gravityMovement);
         else
             ChangePlayerState(PlayerState.Idle);
     }
@@ -280,6 +348,11 @@ public class PlayerWalkingState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerJumpState(player);
                 Debug.Log("Change Player State to Jump");
                 break;
+            case PlayerState.Falling:
+                playerConnector.playerState = PlayerState.Falling;
+                playerConnector.currentPlayerState = new PlayerFallingState(player);
+                Debug.Log("Change Player State to Falling");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
@@ -310,6 +383,7 @@ public class PlayerRunningState : PlayerStates
     public override void Update()
     {
         Gravity();
+        Falling();
         Movement();
         CameraRotationMatching();
     }
@@ -341,11 +415,11 @@ public class PlayerRunningState : PlayerStates
         animController.SetFloat(playerConnector.animMovementXHash, rawX);
         animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-        movementInput = movementInput.normalized * playerConnector.runSpeed * Time.deltaTime;
+        movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movement = movement.normalized * playerConnector.runSpeed * Time.deltaTime;
 
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput + gravityMovement);
+        if (movement.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movement + gravityMovement);
         else
             ChangePlayerState(PlayerState.Idle);
     }
@@ -393,6 +467,11 @@ public class PlayerRunningState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerJumpState(player);
                 Debug.Log("Change Player State to Jump");
                 break;
+            case PlayerState.Falling:
+                playerConnector.playerState = PlayerState.Falling;
+                playerConnector.currentPlayerState = new PlayerFallingState(player);
+                Debug.Log("Change Player State to Falling");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
@@ -423,6 +502,7 @@ public class PlayerSprintingState : PlayerStates
     public override void Update()
     {
         Gravity();
+        Falling();
         Movement();
         CameraRotationMatching();
     }
@@ -449,11 +529,11 @@ public class PlayerSprintingState : PlayerStates
         animController.SetFloat(playerConnector.animMovementXHash, rawX);
         animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-        movementInput = movementInput.normalized * playerConnector.sprintSpeed * Time.deltaTime;
+        movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movement = movement.normalized * playerConnector.sprintSpeed * Time.deltaTime;
 
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput + gravityMovement);
+        if (movement.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movement + gravityMovement);
         else
             ChangePlayerState(PlayerState.Idle);
 
@@ -498,6 +578,11 @@ public class PlayerSprintingState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerJumpState(player);
                 Debug.Log("Change Player State to Jump");
                 break;
+            case PlayerState.Falling:
+                playerConnector.playerState = PlayerState.Falling;
+                playerConnector.currentPlayerState = new PlayerFallingState(player);
+                Debug.Log("Change Player State to Falling");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
@@ -528,6 +613,7 @@ public class PlayerCrouchingState : PlayerStates
     public override void Update()
     {
         Gravity();
+        Falling();
         Movement();
         CameraRotationMatching();
     }
@@ -540,11 +626,11 @@ public class PlayerCrouchingState : PlayerStates
         animController.SetFloat(playerConnector.animMovementXHash, rawX);
         animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-        movementInput = movementInput.normalized * playerConnector.walkSpeed * Time.deltaTime;
+        movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movement = movement.normalized * playerConnector.walkSpeed * Time.deltaTime;
 
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput + gravityMovement);
+        if (movement.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movement + gravityMovement);
         else
             ChangePlayerState(PlayerState.Idle);
     }
@@ -577,6 +663,11 @@ public class PlayerCrouchingState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerRunningState(player);
                 Debug.Log("Changed Player State to Running");
                 break;
+            case PlayerState.Falling:
+                playerConnector.playerState = PlayerState.Falling;
+                playerConnector.currentPlayerState = new PlayerFallingState(player);
+                Debug.Log("Change Player State to Falling");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
@@ -595,6 +686,7 @@ public class PlayerJumpState : PlayerStates
 
         animController.SetTrigger(playerConnector.animJumpHash);
         playerConnector.jumpingTriggered = true;
+        playerConnector.fallingTriggered = true;
     }
 
     public override void Update()
@@ -612,26 +704,32 @@ public class PlayerJumpState : PlayerStates
         animController.SetFloat(playerConnector.animMovementXHash, rawX);
         animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-        movementInput = movementInput.normalized * playerConnector.walkSpeed * Time.deltaTime;
+        movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movement = movement.normalized * playerConnector.walkSpeed * Time.deltaTime;
 
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput + gravityMovement);
+        if (movement.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movement + gravityMovement);
         else
             player.characterController.Move(gravityMovement);
-    }
-
-    public override void CameraRotationMatching()
-    {
-        base.CameraRotationMatching();
     }
 
     public override void JumpForce()
     {
         currentGravity = playerConnector.jumpForce;
-        Debug.Log("Jump Force Called");
     }
 
+    public override void ChangePlayerState(PlayerState playerstate)
+    {
+        switch (playerstate)
+        {
+            case PlayerState.Falling:
+                playerConnector.playerState = PlayerState.Falling;
+                playerConnector.currentPlayerState = new PlayerFallingState(player);
+                Debug.Log("Change Player State to Falling");
+                return;
+        }
+        playerConnector.currentPlayerState.Init();
+    }
 }
 
 public class PlayerFallingState : PlayerStates
@@ -640,6 +738,52 @@ public class PlayerFallingState : PlayerStates
 
     public override void Init()
     {
+        playerConnector.fallingTriggered = true;
+        playerConnector.jumpingTriggered = true;
         animController.SetTrigger(playerConnector.animFallingHash);
+    }
+
+    public override void Update()
+    {
+        Gravity();
+        Falling();
+        Movement();
+        CameraRotationMatching();
+    }
+
+    public override void Movement()
+    {
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movement = movement.normalized * playerConnector.walkSpeed * Time.deltaTime;
+
+        if (movement.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movement + gravityMovement);
+        else
+            player.characterController.Move(gravityMovement);
+    }
+
+    public override void ChangePlayerState(PlayerState playerstate)
+    {
+        switch (playerstate)
+        {
+            case PlayerState.Idle:
+                playerConnector.playerState = PlayerState.Idle;
+                playerConnector.currentPlayerState = new PlayerIdleState(player);
+                animController.SetTrigger(playerConnector.animLandHash);
+                Debug.Log("Change Player State to Idle");
+                break;
+            case PlayerState.Running:
+                playerConnector.playerState = PlayerState.Running;
+                playerConnector.currentPlayerState = new PlayerRunningState(player);
+                animController.SetTrigger(playerConnector.animLandRollRun);
+                Debug.Log("Change Player State to Idle");
+                break;
+        }
     }
 }

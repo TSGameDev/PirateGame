@@ -48,6 +48,7 @@ public class PlayerConnector : ScriptableObject
     public float jumpForce;
 
     public bool jumpingTriggered = false;
+    public bool fallingTriggered = false;
 
     #endregion
 
@@ -61,6 +62,7 @@ public class PlayerConnector : ScriptableObject
     public readonly int animJumpHash = Animator.StringToHash("Jump");
     public readonly int animFallingHash = Animator.StringToHash("Falling");
     public readonly int animLandHash = Animator.StringToHash("Land");
+    public readonly int animLandRollRun = Animator.StringToHash("LandRollRun");
 
     #endregion
 

@@ -26,7 +26,8 @@ MonoBehaviour:
   constantGravity: -0.6
   maxGravity: -9.81
   fallingSpeed: 0
-  fallingThresHold: 0
+  fallingThresHold: -5
   jumpForce: 5
-  jumpingTriggered: 1
-  playerState: 5
+  jumpingTriggered: 0
+  fallingTriggered: 0
+  playerState: 6
