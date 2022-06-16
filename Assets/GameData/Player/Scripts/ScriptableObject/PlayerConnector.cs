@@ -8,7 +8,7 @@ public class PlayerConnector : ScriptableObject
 {
     #region Player Stats
 
-    public float stamina;
+    public float stamina = 100;
 
     [Range(50, 200)]
     public float maxStamina = 100;

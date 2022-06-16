@@ -57,40 +57,12 @@ public abstract class PlayerStates
     /// <summary>
     /// The base Update function decleration which all other states rely on, needs to be in all states to stop errors even if there is no functionality for it in the called state.
     /// </summary>
-    public virtual void Update() 
-    {
-        Gravity();
-        Movement();
-        CameraRotationMatching();
-    }
+    public virtual void Update() { }
 
     /// <summary>
     ///The base movement function decleration which all other states rely on, needs to be in all states to stop errors even if there is no functionality for it in the called state. 
     /// </summary>
-    public virtual void Movement() 
-    {
-        float speed;
-        if (playerConnector.walkMode || playerConnector.crouchMode)
-            speed = playerConnector.walkSpeed;
-        else if (playerConnector.sprintMode)
-            speed = playerConnector.sprintSpeed;
-        else
-            speed = playerConnector.runSpeed;
-
-        float rawX = playerConnector.movementRaw.x;
-        float rawY = playerConnector.movementRaw.y;
-
-        animController.SetFloat(playerConnector.animMovementXHash, rawX);
-        animController.SetFloat(playerConnector.animMovementYHash, rawY);
-
-        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
-        movementInput = movementInput.normalized * speed * Time.deltaTime;
-
-        if (movementInput.magnitude >= Mathf.Epsilon)
-            player.characterController.Move(movementInput + gravityMovement);
-        else
-            ChangePlayerState(PlayerState.Idle);
-    }
+    public virtual void Movement() { }
 
     /// <summary>
     /// The base camera rotation function decleration which all other states rely on, needs to be in all states to stop errors even if there is no functionality for it in the called state.
@@ -135,18 +107,12 @@ public abstract class PlayerStates
     /// <summary>
     /// Transitions into jump state to perform jump activation via init function
     /// </summary>
-    public virtual void Jump() 
-    {
-        ChangePlayerState(PlayerState.Jump);
-    }
+    public virtual void Jump() { }
 
     /// <summary>
     /// Function that is triggered by anim event to applys the force of jumping to player
     /// </summary>
-    public virtual void JumpForce() 
-    {
-        currentGravity = playerConnector.jumpForce;
-    }
+    public virtual void JumpForce() { }
 
 }
 
@@ -157,11 +123,6 @@ public class PlayerIdleState : PlayerStates
     /// </summary>
     /// <param name="player">The monobehaviour player script that holds the declearation of the state machine</param>
     public PlayerIdleState(Player player) : base(player) { }
-
-    public override void Update()
-    {
-        
-    }
 
     /// <summary>
     /// Trigger by the input system to go into the walking state that provide the continous functionlaity for walking.
@@ -178,7 +139,7 @@ public class PlayerIdleState : PlayerStates
 
     public override void Jump()
     {
-        base.Jump();
+        ChangePlayerState(PlayerState.Jump);
     }
 
     /// <summary>
@@ -244,7 +205,9 @@ public class PlayerWalkingState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        base.Update();
+        Gravity();
+        Movement();
+        CameraRotationMatching();
     }
 
     /// <summary>
@@ -259,12 +222,29 @@ public class PlayerWalkingState : PlayerStates
             return;
         }
 
-        base.Movement();
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movementInput = movementInput.normalized * playerConnector.walkSpeed * Time.deltaTime;
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput + gravityMovement);
+        else
+            ChangePlayerState(PlayerState.Idle);
+    }
+
+    public override void CameraRotationMatching()
+    {
+        base.CameraRotationMatching();
     }
 
     public override void Jump()
     {
-        base.Jump();
+        ChangePlayerState(PlayerState.Jump);
     }
 
     /// <summary>
@@ -329,7 +309,9 @@ public class PlayerRunningState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        base.Update();
+        Gravity();
+        Movement();
+        CameraRotationMatching();
     }
 
     /// <summary>
@@ -353,12 +335,29 @@ public class PlayerRunningState : PlayerStates
             return;
         }
 
-        base.Movement();
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movementInput = movementInput.normalized * playerConnector.runSpeed * Time.deltaTime;
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput + gravityMovement);
+        else
+            ChangePlayerState(PlayerState.Idle);
+    }
+
+    public override void CameraRotationMatching()
+    {
+        base.CameraRotationMatching();
     }
 
     public override void Jump()
     {
-        base.Jump();
+        ChangePlayerState(PlayerState.Jump);
     }
 
     /// <summary>
@@ -423,7 +422,9 @@ public class PlayerSprintingState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        base.Update();
+        Gravity();
+        Movement();
+        CameraRotationMatching();
     }
 
     /// <summary>
@@ -442,14 +443,31 @@ public class PlayerSprintingState : PlayerStates
             return;
         }
 
-        base.Movement();
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movementInput = movementInput.normalized * playerConnector.sprintSpeed * Time.deltaTime;
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput + gravityMovement);
+        else
+            ChangePlayerState(PlayerState.Idle);
 
         playerConnector.stamina =- playerConnector.sprintingStaminaStartCost * Time.deltaTime;
     }
 
+    public override void CameraRotationMatching()
+    {
+        base.CameraRotationMatching();
+    }
+
     public override void Jump()
     {
-        base.Jump();
+        ChangePlayerState(PlayerState.Jump);
     }
 
     /// <summary>
@@ -509,7 +527,31 @@ public class PlayerCrouchingState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        base.Update();
+        Gravity();
+        Movement();
+        CameraRotationMatching();
+    }
+
+    public override void Movement()
+    {
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movementInput = movementInput.normalized * playerConnector.walkSpeed * Time.deltaTime;
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput + gravityMovement);
+        else
+            ChangePlayerState(PlayerState.Idle);
+    }
+
+    public override void CameraRotationMatching()
+    {
+        base.CameraRotationMatching();
     }
 
     /// <summary>
@@ -555,9 +597,38 @@ public class PlayerJumpState : PlayerStates
         playerConnector.jumpingTriggered = true;
     }
 
+    public override void Update()
+    {
+        Gravity();
+        Movement();
+        CameraRotationMatching();
+    }
+
+    public override void Movement()
+    {
+        float rawX = playerConnector.movementRaw.x;
+        float rawY = playerConnector.movementRaw.y;
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
+        Vector3 movementInput = (player.transform.right * rawX) + (player.transform.forward * rawY);
+        movementInput = movementInput.normalized * playerConnector.walkSpeed * Time.deltaTime;
+
+        if (movementInput.magnitude >= Mathf.Epsilon)
+            player.characterController.Move(movementInput + gravityMovement);
+        else
+            player.characterController.Move(gravityMovement);
+    }
+
+    public override void CameraRotationMatching()
+    {
+        base.CameraRotationMatching();
+    }
+
     public override void JumpForce()
     {
-        base.JumpForce();
+        currentGravity = playerConnector.jumpForce;
         Debug.Log("Jump Force Called");
     }
 

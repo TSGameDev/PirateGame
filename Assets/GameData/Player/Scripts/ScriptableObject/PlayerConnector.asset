@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3afbdddfb0b23944b972e41084be1355, type: 3}
   m_Name: PlayerConnector
   m_EditorClassIdentifier: 
-  stamina: 0
+  stamina: 100
   maxStamina: 100
   sprintingStaminaStartCost: 10
   walkMode: 0
