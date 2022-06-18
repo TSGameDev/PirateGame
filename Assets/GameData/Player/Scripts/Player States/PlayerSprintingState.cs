@@ -3,13 +3,13 @@ using UnityEngine;
 public class PlayerSprintingState : PlayerStates
 {
     /// <summary>
-    /// Constructor for this state gather from the base blueprint class PlayerStates
+    /// Constructor for the sprinting state.
     /// </summary>
-    /// <param name="player">Reference to the player to fill variables</param>
+    /// <param name="player">player reference to fill required variables.</param>
     public PlayerSprintingState(Player player) : base(player) { }
 
     /// <summary>
-    /// Function that perform inisilisation functionality for this state
+    /// The start function for the sprinting state, sets the anims to running.
     /// </summary>
     public override void Init()
     {
@@ -19,7 +19,7 @@ public class PlayerSprintingState : PlayerStates
     }
 
     /// <summary>
-    /// Update method that is used to provide continous functionality within the state machine. Is called on the Monobehaviour player script.
+    /// The update function for the sprinting state.
     /// </summary>
     public override void Update()
     {
@@ -30,7 +30,7 @@ public class PlayerSprintingState : PlayerStates
     }
 
     /// <summary>
-    /// Movement function that is used to provid movement functionlaity when in this state if it is applicable.
+    /// The movement fucntionality for the sprinting state. sets anim XY values, performs character controller movement with run speed.
     /// </summary>
     public override void Movement()
     {
@@ -62,20 +62,18 @@ public class PlayerSprintingState : PlayerStates
         playerConnector.stamina = -playerConnector.sprintingStaminaStartCost * Time.deltaTime;
     }
 
-    public override void CameraRotationMatching()
-    {
-        base.CameraRotationMatching();
-    }
-
+    /// <summary>
+    /// Jump function to transition into the jump state.
+    /// </summary>
     public override void Jump()
     {
         ChangePlayerState(PlayerState.Jump);
     }
 
     /// <summary>
-    /// Function to transition between playerstates performing the required functionlaity for each possible state. Also limits what states transition into what state.
+    /// The transitions available for the sprinting state.
     /// </summary>
-    /// <param name="playerstate">the player state you wish to transition into</param>
+    /// <param name="playerstate">The state to transition into.</param>
     public override void ChangePlayerState(PlayerState playerstate)
     {
         switch (playerstate)

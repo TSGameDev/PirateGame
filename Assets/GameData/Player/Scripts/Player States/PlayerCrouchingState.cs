@@ -3,13 +3,13 @@ using UnityEngine;
 public class PlayerCrouchingState : PlayerStates
 {
     /// <summary>
-    /// Constructor for this state gather from the base blueprint class PlayerStates
+    /// Constructor for the crouching state.
     /// </summary>
-    /// <param name="player">Reference to the player to fill variables</param>
+    /// <param name="player">reference to the player to fill the required variables.</param>
     public PlayerCrouchingState(Player player) : base(player) { }
 
     /// <summary>
-    /// Function that perform inisilisation functionality for this state
+    /// The start function to the crouching state. Sets the anims to crouch anims.
     /// </summary>
     public override void Init()
     {
@@ -19,16 +19,18 @@ public class PlayerCrouchingState : PlayerStates
     }
 
     /// <summary>
-    /// Update method that is used to provide continous functionality within the state machine. Is called on the Monobehaviour player script.
+    /// The update function for the crouching state.
     /// </summary>
     public override void Update()
     {
-        Gravity();
-        Falling();
+        base.Update();
         Movement();
         CameraRotationMatching();
     }
 
+    /// <summary>
+    /// The movement functionality for the crouching state. movements at walking pace.
+    /// </summary>
     public override void Movement()
     {
         float rawX = playerConnector.movementRaw.x;
@@ -46,15 +48,10 @@ public class PlayerCrouchingState : PlayerStates
             ChangePlayerState(PlayerState.Idle);
     }
 
-    public override void CameraRotationMatching()
-    {
-        base.CameraRotationMatching();
-    }
-
     /// <summary>
-    /// Function to transition between playerstates performing the required functionlaity for each possible state. Also limits what states transition into what state.
+    /// The transitions available for the crouching state.
     /// </summary>
-    /// <param name="playerstate">the player state you wish to transition into</param>
+    /// <param name="playerstate">the state to transition into.</param>
     public override void ChangePlayerState(PlayerState playerstate)
     {
         switch (playerstate)

@@ -3,13 +3,13 @@ using UnityEngine;
 public class PlayerRunningState : PlayerStates
 {
     /// <summary>
-    /// Constructor for this state gather from the base blueprint class PlayerStates
+    /// The constructor for the running state.
     /// </summary>
-    /// <param name="player">Reference to the player to fill variables</param>
+    /// <param name="player">A reference to the player to fill required vairables</param>
     public PlayerRunningState(Player player) : base(player) { }
 
     /// <summary>
-    /// Function that perform inisilisation functionality for this state
+    /// The start function for the running state, sets anims to running
     /// </summary>
     public override void Init()
     {
@@ -19,18 +19,17 @@ public class PlayerRunningState : PlayerStates
     }
 
     /// <summary>
-    /// Update method that is used to provide continous functionality within the state machine. Is called on the Monobehaviour player script.
+    /// Update function for the running state, performs base global functionality, movement and camera rotation matching.
     /// </summary>
     public override void Update()
     {
-        Gravity();
-        Falling();
+        base.Update();
         Movement();
         CameraRotationMatching();
     }
 
     /// <summary>
-    /// Movement function that is used to provid movement functionlaity when in this state if it is applicable.
+    /// The movement function for the running state, sets XY anim values, player character movement and gravity.
     /// </summary>
     public override void Movement()
     {
@@ -65,20 +64,18 @@ public class PlayerRunningState : PlayerStates
             ChangePlayerState(PlayerState.Idle);
     }
 
-    public override void CameraRotationMatching()
-    {
-        base.CameraRotationMatching();
-    }
-
+    /// <summary>
+    /// The jump function that transitions to the jump state.
+    /// </summary>
     public override void Jump()
     {
         ChangePlayerState(PlayerState.Jump);
     }
 
     /// <summary>
-    /// Function to transition between playerstates performing the required functionlaity for each possible state. Also limits what states transition into what state.
+    /// Transitions available from the running state.
     /// </summary>
-    /// <param name="playerstate">the player state you wish to transition into</param>
+    /// <param name="playerstate">State to transition into.</param>
     public override void ChangePlayerState(PlayerState playerstate)
     {
         switch (playerstate)

@@ -3,20 +3,22 @@ using UnityEngine;
 public class PlayerIdleState : PlayerStates
 {
     /// <summary>
-    /// The states constructor which is defined in the base PlayerStates class
+    /// Constructor for the idle state.
     /// </summary>
-    /// <param name="player">The monobehaviour player script that holds the declearation of the state machine</param>
+    /// <param name="player">Reference to the player to fill required variables. </param>
     public PlayerIdleState(Player player) : base(player) { }
 
+    /// <summary>
+    /// Update function for the idle function, performs base global functional and apply gravity via character controller move.
+    /// </summary>
     public override void Update()
     {
-        Gravity();
-        Falling();
+        base.Update();
         player.characterController.Move(gravityMovement);
     }
 
     /// <summary>
-    /// Trigger by the input system to go into the walking state that provide the continous functionlaity for walking.
+    /// Movement function for the idle state which transitions to the correct state, walking running or crouchign base on the input.
     /// </summary>
     public override void Movement()
     {
@@ -28,25 +30,18 @@ public class PlayerIdleState : PlayerStates
             ChangePlayerState(PlayerState.Running);
     }
 
-    public override void Gravity()
-    {
-        base.Gravity();
-    }
-
-    public override void Falling()
-    {
-        base.Falling();
-    }
-
+    /// <summary>
+    /// Jump function to transiton into the jump state.
+    /// </summary>
     public override void Jump()
     {
         ChangePlayerState(PlayerState.Jump);
     }
 
     /// <summary>
-    /// Function that changes the player state and performs the functionality to transition into the passed in state
+    /// available transitons for the idle state.
     /// </summary>
-    /// <param name="playerstate">The State the player need to transition into</param>
+    /// <param name="playerstate">State to transiton into. </param>
     public override void ChangePlayerState(PlayerState playerstate)
     {
         switch (playerstate)

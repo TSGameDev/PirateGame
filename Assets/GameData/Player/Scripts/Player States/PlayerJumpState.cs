@@ -29,14 +29,13 @@ public class PlayerJumpState : PlayerStates
         CameraRotationMatching();
     }
 
-
+    /// <summary>
+    /// The movement functionality for the jump state, Allows the player to move at walking pacing in the air when jumping. Also applies gravity.
+    /// </summary>
     public override void Movement()
     {
         float rawX = playerConnector.movementRaw.x;
         float rawY = playerConnector.movementRaw.y;
-
-        animController.SetFloat(playerConnector.animMovementXHash, rawX);
-        animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
         movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
         movement = movement.normalized * playerConnector.walkSpeed * Time.deltaTime;
@@ -47,13 +46,18 @@ public class PlayerJumpState : PlayerStates
             player.characterController.Move(gravityMovement);
     }
 
-
+    /// <summary>
+    /// The function that applies the jump force to the player, is triggered by an event anim via the player monobehaviour to be keyframe accruate.
+    /// </summary>
     public override void JumpForce()
     {
         currentGravity = playerConnector.jumpForce;
     }
 
-
+    /// <summary>
+    /// The function providing the transitions available during the jump state.
+    /// </summary>
+    /// <param name="playerstate">The state to transition to.</param>
     public override void ChangePlayerState(PlayerState playerstate)
     {
         switch (playerstate)
