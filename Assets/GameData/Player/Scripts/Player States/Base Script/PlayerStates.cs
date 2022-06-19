@@ -159,7 +159,7 @@ public abstract class PlayerStates
             ChangePlayerState(PlayerState.Falling);
         }
 
-        if (playerConnector.fallingTriggered && IsGrounded())
+        if (playerConnector.fallingTriggered && IsGrounded() && playerConnector.fallingSpeed < -0.1f)
         {
             playerConnector.fallingTriggered = false;
             playerConnector.jumpingTriggered = false;

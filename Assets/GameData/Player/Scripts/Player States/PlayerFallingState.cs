@@ -36,6 +36,9 @@ public class PlayerFallingState : PlayerStates
         float rawX = playerConnector.movementRaw.x;
         float rawY = playerConnector.movementRaw.y;
 
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+
         movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
         movement = movement.normalized * playerConnector.walkSpeed * Time.deltaTime;
 

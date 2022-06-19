@@ -24,7 +24,7 @@ public class PlayerJumpState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        Gravity();
+        base.Update();
         Movement();
         CameraRotationMatching();
     }
@@ -36,6 +36,9 @@ public class PlayerJumpState : PlayerStates
     {
         float rawX = playerConnector.movementRaw.x;
         float rawY = playerConnector.movementRaw.y;
+
+        animController.SetFloat(playerConnector.animMovementXHash, rawX);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY);
 
         movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
         movement = movement.normalized * playerConnector.walkSpeed * Time.deltaTime;
@@ -67,6 +70,18 @@ public class PlayerJumpState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerFallingState(player);
                 Debug.Log("Change Player State to Falling");
                 return;
+            case PlayerState.Idle:
+                playerConnector.playerState = PlayerState.Idle;
+                playerConnector.currentPlayerState = new PlayerIdleState(player);
+                animController.SetTrigger(playerConnector.animLandHash);
+                Debug.Log("Change Player State to Idle");
+                break;
+            case PlayerState.Running:
+                playerConnector.playerState = PlayerState.Running;
+                playerConnector.currentPlayerState = new PlayerRunningState(player);
+                animController.SetTrigger(playerConnector.animLandRollRun);
+                Debug.Log("Change Player State to Running");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }

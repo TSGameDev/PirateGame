@@ -12,6 +12,9 @@ public class InputManager : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// Called when the script is enabled including at startup, defines variables and connectors controls.
+    /// </summary>
     private void OnEnable()
     {
         //Input Manager Initialisation
@@ -36,6 +39,9 @@ public class InputManager : MonoBehaviour
         playerControls.Game.Jumping.performed += ctx => playerConnector.currentPlayerState.Jump();
     }
 
+    /// <summary>
+    /// Called when the script is disabled, removes all functionlaity from the player controls.
+    /// </summary>
     private void OnDisable()
     {
         //Input Manager Deactivation

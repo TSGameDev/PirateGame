@@ -22,6 +22,9 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// Function called when the application starts up before Start. creates and/or defines variables.
+    /// </summary>
     private void Awake()
     {
         playerConnector.currentPlayerState = new PlayerIdleState(this);
@@ -29,19 +32,29 @@ public class Player : MonoBehaviour
         animController = GetComponent<Animator>();
     }
 
+    /// <summary>
+    /// Update function ran every frame.
+    /// </summary>
     private void Update()
     {
         playerConnector.currentPlayerState.Update();
     }
 
+    /// <summary>
+    /// Public function that is called by an anim event to calls the state machine jump force function.
+    /// </summary>
     public void JumpForce()
     {
         playerConnector.currentPlayerState.JumpForce();
     }
 
+    /// <summary>
+    /// Public function called by an anim event to transition the state mahcine into the falling state after ending the jump.
+    /// </summary>
     public void JumpFallingTransition()
     {
         playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Falling);
     }
+
 }
 
