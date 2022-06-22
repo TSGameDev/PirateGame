@@ -18,6 +18,7 @@ MonoBehaviour:
   walkMode: 0
   sprintMode: 0
   crouchMode: 0
+  combatMode: 0
   movementRaw: {x: 0, y: 0}
   walkSpeed: 2
   runSpeed: 5
