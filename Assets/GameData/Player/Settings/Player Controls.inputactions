@@ -24,12 +24,12 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "WalkToggle",
+                    "name": "Jumping",
                     "type": "Button",
-                    "id": "fb1f78e1-a91d-4ed1-8cd6-ae280f976ecb",
+                    "id": "cbafd489-9595-40e0-9469-ef6da39e3b0a",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=2)",
+                    "interactions": "",
                     "initialStateCheck": false
                 },
                 {
@@ -42,18 +42,27 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "WalkToggle",
+                    "type": "Button",
+                    "id": "fb1f78e1-a91d-4ed1-8cd6-ae280f976ecb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "CrouchToggle",
                     "type": "Button",
                     "id": "a734ac92-e89b-42be-9023-02d2978b5e47",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press(behavior=2)",
+                    "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Jumping",
+                    "name": "CombatToggle",
                     "type": "Button",
-                    "id": "cbafd489-9595-40e0-9469-ef6da39e3b0a",
+                    "id": "ef33d730-09bb-4b42-bc24-734e1b25843b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -129,17 +138,6 @@
                 },
                 {
                     "name": "",
-                    "id": "0f0f8e4b-987b-41ff-b30a-3dbc7c01fd9d",
-                    "path": "<Keyboard>/leftAlt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "WalkToggle",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "e9b06d9b-305c-4170-b182-00886c2d0314",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
@@ -162,12 +160,34 @@
                 },
                 {
                     "name": "",
+                    "id": "9295c338-2bf0-4997-a570-a064ec0a51a9",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CombatToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "2e5dd1e0-06c3-48e6-a67f-760ef21f2478",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Jumping",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f0f8e4b-987b-41ff-b30a-3dbc7c01fd9d",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WalkToggle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

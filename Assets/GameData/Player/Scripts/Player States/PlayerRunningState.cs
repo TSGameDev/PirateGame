@@ -26,6 +26,7 @@ public class PlayerRunningState : PlayerStates
         base.Update();
         Movement();
         CameraRotationMatching();
+        Combat();
     }
 
     /// <summary>

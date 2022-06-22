@@ -15,6 +15,7 @@ public class PlayerIdleState : PlayerStates
     {
         base.Update();
         player.characterController.Move(gravityMovement);
+        Combat();
     }
 
     /// <summary>

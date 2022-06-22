@@ -171,6 +171,15 @@ public abstract class PlayerStates
         }
     }
 
+    /// <summary>
+    /// Function that transitions animations into combat style.
+    /// </summary>
+    public virtual void Combat()
+    {
+        animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
+    }
+
+
     #endregion
 
 }

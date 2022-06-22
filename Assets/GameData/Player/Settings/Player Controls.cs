@@ -46,12 +46,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""WalkToggle"",
+                    ""name"": ""Jumping"",
                     ""type"": ""Button"",
-                    ""id"": ""fb1f78e1-a91d-4ed1-8cd6-ae280f976ecb"",
+                    ""id"": ""cbafd489-9595-40e0-9469-ef6da39e3b0a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)"",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
@@ -64,18 +64,27 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""WalkToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""fb1f78e1-a91d-4ed1-8cd6-ae280f976ecb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""CrouchToggle"",
                     ""type"": ""Button"",
                     ""id"": ""a734ac92-e89b-42be-9023-02d2978b5e47"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press(behavior=2)"",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Jumping"",
+                    ""name"": ""CombatToggle"",
                     ""type"": ""Button"",
-                    ""id"": ""cbafd489-9595-40e0-9469-ef6da39e3b0a"",
+                    ""id"": ""ef33d730-09bb-4b42-bc24-734e1b25843b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -151,17 +160,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""0f0f8e4b-987b-41ff-b30a-3dbc7c01fd9d"",
-                    ""path"": ""<Keyboard>/leftAlt"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WalkToggle"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""e9b06d9b-305c-4170-b182-00886c2d0314"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
@@ -184,12 +182,34 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""9295c338-2bf0-4997-a570-a064ec0a51a9"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CombatToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""2e5dd1e0-06c3-48e6-a67f-760ef21f2478"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Jumping"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0f0f8e4b-987b-41ff-b30a-3dbc7c01fd9d"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WalkToggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -202,10 +222,11 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_MouseDelta = m_Game.FindAction("MouseDelta", throwIfNotFound: true);
         m_Game_Movement = m_Game.FindAction("Movement", throwIfNotFound: true);
-        m_Game_WalkToggle = m_Game.FindAction("WalkToggle", throwIfNotFound: true);
-        m_Game_SprintToggle = m_Game.FindAction("SprintToggle", throwIfNotFound: true);
-        m_Game_CrouchToggle = m_Game.FindAction("CrouchToggle", throwIfNotFound: true);
         m_Game_Jumping = m_Game.FindAction("Jumping", throwIfNotFound: true);
+        m_Game_SprintToggle = m_Game.FindAction("SprintToggle", throwIfNotFound: true);
+        m_Game_WalkToggle = m_Game.FindAction("WalkToggle", throwIfNotFound: true);
+        m_Game_CrouchToggle = m_Game.FindAction("CrouchToggle", throwIfNotFound: true);
+        m_Game_CombatToggle = m_Game.FindAction("CombatToggle", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -267,20 +288,22 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private IGameActions m_GameActionsCallbackInterface;
     private readonly InputAction m_Game_MouseDelta;
     private readonly InputAction m_Game_Movement;
-    private readonly InputAction m_Game_WalkToggle;
-    private readonly InputAction m_Game_SprintToggle;
-    private readonly InputAction m_Game_CrouchToggle;
     private readonly InputAction m_Game_Jumping;
+    private readonly InputAction m_Game_SprintToggle;
+    private readonly InputAction m_Game_WalkToggle;
+    private readonly InputAction m_Game_CrouchToggle;
+    private readonly InputAction m_Game_CombatToggle;
     public struct GameActions
     {
         private @PlayerControls m_Wrapper;
         public GameActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @MouseDelta => m_Wrapper.m_Game_MouseDelta;
         public InputAction @Movement => m_Wrapper.m_Game_Movement;
-        public InputAction @WalkToggle => m_Wrapper.m_Game_WalkToggle;
-        public InputAction @SprintToggle => m_Wrapper.m_Game_SprintToggle;
-        public InputAction @CrouchToggle => m_Wrapper.m_Game_CrouchToggle;
         public InputAction @Jumping => m_Wrapper.m_Game_Jumping;
+        public InputAction @SprintToggle => m_Wrapper.m_Game_SprintToggle;
+        public InputAction @WalkToggle => m_Wrapper.m_Game_WalkToggle;
+        public InputAction @CrouchToggle => m_Wrapper.m_Game_CrouchToggle;
+        public InputAction @CombatToggle => m_Wrapper.m_Game_CombatToggle;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -296,18 +319,21 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Movement.started -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnMovement;
-                @WalkToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
-                @WalkToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
-                @WalkToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
-                @SprintToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
-                @SprintToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
-                @SprintToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
-                @CrouchToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
-                @CrouchToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
-                @CrouchToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
                 @Jumping.started -= m_Wrapper.m_GameActionsCallbackInterface.OnJumping;
                 @Jumping.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnJumping;
                 @Jumping.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnJumping;
+                @SprintToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
+                @SprintToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
+                @SprintToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnSprintToggle;
+                @WalkToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
+                @WalkToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
+                @WalkToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnWalkToggle;
+                @CrouchToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
+                @CrouchToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
+                @CrouchToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCrouchToggle;
+                @CombatToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCombatToggle;
+                @CombatToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCombatToggle;
+                @CombatToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCombatToggle;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -318,18 +344,21 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
-                @WalkToggle.started += instance.OnWalkToggle;
-                @WalkToggle.performed += instance.OnWalkToggle;
-                @WalkToggle.canceled += instance.OnWalkToggle;
-                @SprintToggle.started += instance.OnSprintToggle;
-                @SprintToggle.performed += instance.OnSprintToggle;
-                @SprintToggle.canceled += instance.OnSprintToggle;
-                @CrouchToggle.started += instance.OnCrouchToggle;
-                @CrouchToggle.performed += instance.OnCrouchToggle;
-                @CrouchToggle.canceled += instance.OnCrouchToggle;
                 @Jumping.started += instance.OnJumping;
                 @Jumping.performed += instance.OnJumping;
                 @Jumping.canceled += instance.OnJumping;
+                @SprintToggle.started += instance.OnSprintToggle;
+                @SprintToggle.performed += instance.OnSprintToggle;
+                @SprintToggle.canceled += instance.OnSprintToggle;
+                @WalkToggle.started += instance.OnWalkToggle;
+                @WalkToggle.performed += instance.OnWalkToggle;
+                @WalkToggle.canceled += instance.OnWalkToggle;
+                @CrouchToggle.started += instance.OnCrouchToggle;
+                @CrouchToggle.performed += instance.OnCrouchToggle;
+                @CrouchToggle.canceled += instance.OnCrouchToggle;
+                @CombatToggle.started += instance.OnCombatToggle;
+                @CombatToggle.performed += instance.OnCombatToggle;
+                @CombatToggle.canceled += instance.OnCombatToggle;
             }
         }
     }
@@ -338,9 +367,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     {
         void OnMouseDelta(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
-        void OnWalkToggle(InputAction.CallbackContext context);
-        void OnSprintToggle(InputAction.CallbackContext context);
-        void OnCrouchToggle(InputAction.CallbackContext context);
         void OnJumping(InputAction.CallbackContext context);
+        void OnSprintToggle(InputAction.CallbackContext context);
+        void OnWalkToggle(InputAction.CallbackContext context);
+        void OnCrouchToggle(InputAction.CallbackContext context);
+        void OnCombatToggle(InputAction.CallbackContext context);
     }
 }

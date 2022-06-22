@@ -23,10 +23,10 @@ public class PlayerSprintingState : PlayerStates
     /// </summary>
     public override void Update()
     {
-        Gravity();
-        Falling();
+        base.Update();
         Movement();
         CameraRotationMatching();
+        Combat();
     }
 
     /// <summary>

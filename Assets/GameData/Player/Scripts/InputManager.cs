@@ -37,6 +37,9 @@ public class InputManager : MonoBehaviour
 
         //Player Jump Control
         playerControls.Game.Jumping.performed += ctx => playerConnector.currentPlayerState.Jump();
+
+        //Player Combat Controls
+        playerControls.Game.CombatToggle.performed += ctx => playerConnector.combatMode = !playerConnector.combatMode;
     }
 
     /// <summary>

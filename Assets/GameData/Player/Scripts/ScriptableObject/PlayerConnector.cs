@@ -28,19 +28,22 @@ public class PlayerConnector : ScriptableObject
     [TabGroup("base", "Movement")]
 
     [FoldoutGroup("base/Movement/Movement Flags")]
-    [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 100)]
+    [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 75)]
     public bool walkMode = false;
 
-    [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 100)]
+    [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 75)]
     public bool sprintMode = false;
 
-    [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 100)]
+    [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 75)]
     public bool crouchMode = false;
+
+    [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 75)]
+    public bool combatMode = false;
 
     #endregion
 
     #region Movement Variables
-    
+
     [FoldoutGroup("base/Movement/Movement Speeds")]
     public Vector2 movementRaw;
     
@@ -95,6 +98,7 @@ public class PlayerConnector : ScriptableObject
     public readonly int animWalkBool = Animator.StringToHash("WalkToggle");
     public readonly int animSprintBool = Animator.StringToHash("SprintToggle");
     public readonly int animCrouchBool = Animator.StringToHash("CrouchToggle");
+    public readonly int animCombatBool = Animator.StringToHash("CombatToggle");
     public readonly int animMovementXHash = Animator.StringToHash("MovementX");
     public readonly int animMovementYHash = Animator.StringToHash("MovementY");
     public readonly int animJumpHash = Animator.StringToHash("Jump");
