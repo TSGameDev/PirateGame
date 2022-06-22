@@ -9,13 +9,24 @@ public class PlayerIdleState : PlayerStates
     public PlayerIdleState(Player player) : base(player) { }
 
     /// <summary>
+    /// Start function for the Idle state.
+    /// </summary>
+    public override void Init()
+    {
+        animController.SetBool(playerConnector.animCrouchBool, false);
+        Movement();
+    }
+
+    /// <summary>
     /// Update function for the idle function, performs base global functional and apply gravity via character controller move.
     /// </summary>
     public override void Update()
     {
         base.Update();
         player.characterController.Move(gravityMovement);
-        Combat();
+
+        if (playerConnector.combatMode)
+            CameraRotationMatching();
     }
 
     /// <summary>
@@ -25,9 +36,9 @@ public class PlayerIdleState : PlayerStates
     {
         if (playerConnector.walkMode)
             ChangePlayerState(PlayerState.Walking);
-        else if (playerConnector.crouchMode)
+        else if (playerConnector.crouchMode && playerConnector.combatMode == false)
             ChangePlayerState(PlayerState.Crouching);
-        else
+        else if (playerConnector.movementRaw.magnitude >= Mathf.Epsilon)
             ChangePlayerState(PlayerState.Running);
     }
 
@@ -37,6 +48,14 @@ public class PlayerIdleState : PlayerStates
     public override void Jump()
     {
         ChangePlayerState(PlayerState.Jump);
+    }
+
+    /// <summary>
+    /// Allows this stat to draw weapon / toggle into combat anims.
+    /// </summary>
+    public override void Combat()
+    {
+        base.Combat();
     }
 
     /// <summary>

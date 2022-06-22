@@ -22,24 +22,24 @@ public class InputManager : MonoBehaviour
         playerControls.Enable();
 
         //Player Movement Controls
-        playerControls.Game.Movement.performed += ctx => playerConnector.currentPlayerState.Movement();
         playerControls.Game.Movement.performed += ctx => playerConnector.movementRaw = ctx.ReadValue<Vector2>();
         playerControls.Game.Movement.canceled += ctx => playerConnector.movementRaw = new Vector2();
+        playerControls.Game.Movement.performed += ctx => playerConnector.currentPlayerState.Movement();
 
         //Player Movement Mode Toggles
         playerControls.Game.WalkToggle.performed += ctx => playerConnector.walkMode = true;
         playerControls.Game.WalkToggle.canceled += ctx => playerConnector.walkMode = false;
         playerControls.Game.SprintToggle.performed += ctx => playerConnector.sprintMode = true;
         playerControls.Game.SprintToggle.canceled += ctx => playerConnector.sprintMode = false;
-        playerControls.Game.CrouchToggle.performed += ctx => playerConnector.currentPlayerState.Movement();
         playerControls.Game.CrouchToggle.performed += ctx => playerConnector.crouchMode = true;
         playerControls.Game.CrouchToggle.canceled += ctx => playerConnector.crouchMode = false;
+        playerControls.Game.CrouchToggle.performed += ctx => playerConnector.currentPlayerState.Movement();
 
         //Player Jump Control
         playerControls.Game.Jumping.performed += ctx => playerConnector.currentPlayerState.Jump();
 
         //Player Combat Controls
-        playerControls.Game.CombatToggle.performed += ctx => playerConnector.combatMode = !playerConnector.combatMode;
+        playerControls.Game.CombatToggle.performed += ctx => playerConnector.currentPlayerState.Combat();
     }
 
     /// <summary>
@@ -62,6 +62,12 @@ public class InputManager : MonoBehaviour
         playerControls.Game.SprintToggle.canceled -= ctx => playerConnector.sprintMode = false;
         playerControls.Game.CrouchToggle.performed -= ctx => playerConnector.crouchMode = true;
         playerControls.Game.CrouchToggle.canceled -= ctx => playerConnector.crouchMode = false;
+
+        //Player Jump Control
+        playerControls.Game.Jumping.performed -= ctx => playerConnector.currentPlayerState.Jump();
+
+        //Player Combat Controls
+        playerControls.Game.CombatToggle.performed -= ctx => playerConnector.currentPlayerState.Combat();
     }
 
 }

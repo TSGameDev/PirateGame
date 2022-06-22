@@ -176,6 +176,7 @@ public abstract class PlayerStates
     /// </summary>
     public virtual void Combat()
     {
+        playerConnector.combatMode = !playerConnector.combatMode;
         animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
     }
 

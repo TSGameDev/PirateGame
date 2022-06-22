@@ -26,7 +26,6 @@ public class PlayerRunningState : PlayerStates
         base.Update();
         Movement();
         CameraRotationMatching();
-        Combat();
     }
 
     /// <summary>
@@ -44,7 +43,7 @@ public class PlayerRunningState : PlayerStates
             ChangePlayerState(PlayerState.Sprinting);
             return;
         }
-        else if (playerConnector.crouchMode)
+        else if (playerConnector.crouchMode && !playerConnector.combatMode)
         {
             ChangePlayerState(PlayerState.Crouching);
             return;
@@ -71,6 +70,14 @@ public class PlayerRunningState : PlayerStates
     public override void Jump()
     {
         ChangePlayerState(PlayerState.Jump);
+    }
+
+    /// <summary>
+    /// Allows this stat to draw weapon / toggle into combat anims.
+    /// </summary>
+    public override void Combat()
+    {
+        base.Combat();
     }
 
     /// <summary>

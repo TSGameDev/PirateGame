@@ -33,6 +33,9 @@ public class PlayerCrouchingState : PlayerStates
     /// </summary>
     public override void Movement()
     {
+        if (!playerConnector.crouchMode)
+            ChangePlayerState(PlayerState.Idle);
+
         float rawX = playerConnector.movementRaw.x;
         float rawY = playerConnector.movementRaw.y;
 
@@ -44,8 +47,14 @@ public class PlayerCrouchingState : PlayerStates
 
         if (movement.magnitude >= Mathf.Epsilon)
             player.characterController.Move(movement + gravityMovement);
-        else
-            ChangePlayerState(PlayerState.Idle);
+    }
+
+    /// <summary>
+    /// Can't draw weapons when in crouching due to no crouching weapon holding anims.
+    /// </summary>
+    public override void Combat()
+    {
+        Debug.Log("Can't draw weapons when crouching");
     }
 
     /// <summary>

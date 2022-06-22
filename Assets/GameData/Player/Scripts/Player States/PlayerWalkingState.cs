@@ -26,7 +26,6 @@ public class PlayerWalkingState : PlayerStates
         base.Update();
         Movement();
         CameraRotationMatching();
-        Combat();
     }
 
     /// <summary>
@@ -62,6 +61,14 @@ public class PlayerWalkingState : PlayerStates
     public override void Jump()
     {
         ChangePlayerState(PlayerState.Jump);
+    }
+
+    /// <summary>
+    /// Allows this stat to draw weapon / toggle into combat anims.
+    /// </summary>
+    public override void Combat()
+    {
+        base.Combat();
     }
 
     /// <summary>
