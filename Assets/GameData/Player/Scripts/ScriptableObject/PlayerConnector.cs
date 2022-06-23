@@ -105,7 +105,14 @@ public class PlayerConnector : ScriptableObject
     public readonly int animFallingHash = Animator.StringToHash("Falling");
     public readonly int animLandHash = Animator.StringToHash("Land");
     public readonly int animLandRollRun = Animator.StringToHash("LandRollRun");
-
+    public readonly int animDuelWieldAttack = Animator.StringToHash("DualWieldAttack");
+    public readonly int animParry = Animator.StringToHash("Parry");
+    public readonly int animParryHit = Animator.StringToHash("ParryHit");
+    public readonly int animLeftHandAttack = Animator.StringToHash("LeftHandAttack");
+    public readonly int animLeftHandRunningAttack = Animator.StringToHash("LeftHandRunningAttack");
+    public readonly int animShieldAttack = Animator.StringToHash("ShieldAttack");
+    public readonly int animRightHandAttack = Animator.StringToHash("RightHandAttack");
+    public readonly int animRightHandRunningAttack = Animator.StringToHash("RightHandRunningAttack");
     #endregion
 
     #region Events
