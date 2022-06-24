@@ -89,6 +89,33 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftHandAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""79064547-786c-4b62-80e3-f22670aacc11"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightHandAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""791f4f3b-49ba-4701-b87b-207d71147bd8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Parry/DualAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""4bfc7696-566b-4364-a2a3-6ea25aba11cf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -212,6 +239,39 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""WalkToggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""08a03c16-3d65-4069-89e0-02b32d394d9c"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftHandAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b55672de-71ad-481a-976e-ba9bbc1a8720"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightHandAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f77169e6-4dc0-497c-acf1-2efeb9f0d652"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Parry/DualAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -227,6 +287,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Game_WalkToggle = m_Game.FindAction("WalkToggle", throwIfNotFound: true);
         m_Game_CrouchToggle = m_Game.FindAction("CrouchToggle", throwIfNotFound: true);
         m_Game_CombatToggle = m_Game.FindAction("CombatToggle", throwIfNotFound: true);
+        m_Game_LeftHandAttack = m_Game.FindAction("LeftHandAttack", throwIfNotFound: true);
+        m_Game_RightHandAttack = m_Game.FindAction("RightHandAttack", throwIfNotFound: true);
+        m_Game_ParryDualAttack = m_Game.FindAction("Parry/DualAttack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -293,6 +356,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_WalkToggle;
     private readonly InputAction m_Game_CrouchToggle;
     private readonly InputAction m_Game_CombatToggle;
+    private readonly InputAction m_Game_LeftHandAttack;
+    private readonly InputAction m_Game_RightHandAttack;
+    private readonly InputAction m_Game_ParryDualAttack;
     public struct GameActions
     {
         private @PlayerControls m_Wrapper;
@@ -304,6 +370,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @WalkToggle => m_Wrapper.m_Game_WalkToggle;
         public InputAction @CrouchToggle => m_Wrapper.m_Game_CrouchToggle;
         public InputAction @CombatToggle => m_Wrapper.m_Game_CombatToggle;
+        public InputAction @LeftHandAttack => m_Wrapper.m_Game_LeftHandAttack;
+        public InputAction @RightHandAttack => m_Wrapper.m_Game_RightHandAttack;
+        public InputAction @ParryDualAttack => m_Wrapper.m_Game_ParryDualAttack;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -334,6 +403,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @CombatToggle.started -= m_Wrapper.m_GameActionsCallbackInterface.OnCombatToggle;
                 @CombatToggle.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnCombatToggle;
                 @CombatToggle.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnCombatToggle;
+                @LeftHandAttack.started -= m_Wrapper.m_GameActionsCallbackInterface.OnLeftHandAttack;
+                @LeftHandAttack.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnLeftHandAttack;
+                @LeftHandAttack.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnLeftHandAttack;
+                @RightHandAttack.started -= m_Wrapper.m_GameActionsCallbackInterface.OnRightHandAttack;
+                @RightHandAttack.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnRightHandAttack;
+                @RightHandAttack.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnRightHandAttack;
+                @ParryDualAttack.started -= m_Wrapper.m_GameActionsCallbackInterface.OnParryDualAttack;
+                @ParryDualAttack.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnParryDualAttack;
+                @ParryDualAttack.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnParryDualAttack;
             }
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
@@ -359,6 +437,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @CombatToggle.started += instance.OnCombatToggle;
                 @CombatToggle.performed += instance.OnCombatToggle;
                 @CombatToggle.canceled += instance.OnCombatToggle;
+                @LeftHandAttack.started += instance.OnLeftHandAttack;
+                @LeftHandAttack.performed += instance.OnLeftHandAttack;
+                @LeftHandAttack.canceled += instance.OnLeftHandAttack;
+                @RightHandAttack.started += instance.OnRightHandAttack;
+                @RightHandAttack.performed += instance.OnRightHandAttack;
+                @RightHandAttack.canceled += instance.OnRightHandAttack;
+                @ParryDualAttack.started += instance.OnParryDualAttack;
+                @ParryDualAttack.performed += instance.OnParryDualAttack;
+                @ParryDualAttack.canceled += instance.OnParryDualAttack;
             }
         }
     }
@@ -372,5 +459,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnWalkToggle(InputAction.CallbackContext context);
         void OnCrouchToggle(InputAction.CallbackContext context);
         void OnCombatToggle(InputAction.CallbackContext context);
+        void OnLeftHandAttack(InputAction.CallbackContext context);
+        void OnRightHandAttack(InputAction.CallbackContext context);
+        void OnParryDualAttack(InputAction.CallbackContext context);
     }
 }

@@ -40,6 +40,9 @@ public class InputManager : MonoBehaviour
 
         //Player Combat Controls
         playerControls.Game.CombatToggle.performed += ctx => playerConnector.currentPlayerState.Combat();
+        playerControls.Game.LeftHandAttack.performed += ctx => playerConnector.currentPlayerState.LeftHandAttack();
+        playerControls.Game.RightHandAttack.performed += ctx => playerConnector.currentPlayerState.RightHandAttack();
+        playerControls.Game.ParryDualAttack.performed += ctx => playerConnector.currentPlayerState.ParryDualAttack();
     }
 
     /// <summary>

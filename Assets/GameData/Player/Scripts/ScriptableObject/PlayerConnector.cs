@@ -10,16 +10,29 @@ public class PlayerConnector : ScriptableObject
     [TabGroup("base", "Player Stats")]
 
     [FoldoutGroup("base/Player Stats/Stamina")]
-    [MinValue("@maxStamina.x"), MaxValue("@maxStamina.y")]
+    [MinValue("@staminaRange.x"), MaxValue("@staminaRange.y")]
+    [PropertyTooltip("The current stamina of the Player.")]
     public float stamina = 100;
 
     [FoldoutGroup("base/Player Stats/Stamina")]
     [MinMaxSlider(0,300, true)]
-    public Vector2 maxStamina = new Vector2(0, 200);
+    [PropertyTooltip("The range the player stamina is locked to. Left number is the min stamina, Right number is max stamina.")]
+    public Vector2 staminaRange = new Vector2(0, 200);
+
+    [FoldoutGroup("base/Player Stats/Stamina")]
+    [MinValue(1), MaxValue(10)]
+    [PropertyTooltip("The stamina regeneration rate per second")]
+    public float staminaRegenRate = 1;
 
     [FoldoutGroup("base/Player Stats/Stamina")]
     [MinValue(1), MaxValue(50)]
+    [PropertyTooltip("The stamina required to begin running. Only detemines the amount of stamina to begin running does not actually reduce stamina, Used to prevent weird glitching when stamina regens at 0 and then runs again.")]
     public float sprintingStaminaStartCost = 10;
+
+    [FoldoutGroup("base/Player Stats/Stamina")]
+    [MinValue(0), MaxValue(10)]
+    [PropertyTooltip("The stamina cost per second when running.")]
+    public float sprintingCost = 1;
 
     #endregion
 
@@ -29,31 +42,39 @@ public class PlayerConnector : ScriptableObject
 
     [FoldoutGroup("base/Movement/Movement Flags")]
     [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 75)]
+    [PropertyTooltip("Toggle to enter Walking state.")]
     public bool walkMode = false;
 
     [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 75)]
+    [PropertyTooltip("Toggle to enter Sprinting state.")]
     public bool sprintMode = false;
 
     [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 75)]
+    [PropertyTooltip("Toggle to enter Crouching state.")]
     public bool crouchMode = false;
 
     [HorizontalGroup("base/Movement/Movement Flags/Hoz1", LabelWidth = 75)]
+    [PropertyTooltip("Toggle to enter Combat Mode.")]
     public bool combatMode = false;
 
     #endregion
 
     #region Movement Variables
 
-    [FoldoutGroup("base/Movement/Movement Speeds")]
+    [HideInInspector]
+    //Variable that stores the input used for movement that is not normalised.
     public Vector2 movementRaw;
     
     [FoldoutGroup("base/Movement/Movement Speeds")]
+    [PropertyTooltip("The player walking speed.")]
     public float walkSpeed = 2f;
     
     [FoldoutGroup("base/Movement/Movement Speeds")]
+    [PropertyTooltip("The player running speed.")]
     public float runSpeed = 5f;
     
     [FoldoutGroup("base/Movement/Movement Speeds")]
+    [PropertyTooltip("The player sprint speed.")]
     public float sprintSpeed = 10f;
 
     #endregion
@@ -61,26 +82,34 @@ public class PlayerConnector : ScriptableObject
     #region Gravity Variables
 
     [FoldoutGroup("base/Movement/Gravity")]
+    [PropertyTooltip("The change per second to gravity applied to player when not grounded.")]
     public float gravity;
     [FoldoutGroup("base/Movement/Gravity")]
+    [PropertyTooltip("The constant gravity to be applied to the player. Keeps the player on the ground while moving.")]
     public float constantGravity;
     [FoldoutGroup("base/Movement/Gravity")]
+    [PropertyTooltip("The max gravity that can be enforced on the player.")]
     public float maxGravity;
 
     #endregion
 
     #region Jumping / Falling
 
-    [FoldoutGroup("base/Movement/Jumping & Falling")]
+    [HideInInspector]
+    //The current Y velocity of the player
     public float fallingSpeed;
     [FoldoutGroup("base/Movement/Jumping & Falling")]
+    [PropertyTooltip("The threshold that controls falling animations. The falling speed needs to be greater than this for falling animations to play.")]
     public float fallingThresHold;
     [FoldoutGroup("base/Movement/Jumping & Falling")]
+    [PropertyTooltip("The force applied to the player when jumping. Determines jump height.")]
     public float jumpForce;
 
-    [FoldoutGroup("base/Movement/Jumping & Falling")]
+    [HideInInspector]
+    //Bool to show if the player has jumped/ is jumpping or falling
     public bool jumpingTriggered = false;
-    [FoldoutGroup("base/Movement/Jumping & Falling")]
+    [HideInInspector]
+    //Bool to show if the player is currently falling
     public bool fallingTriggered = false;
 
     #endregion
@@ -88,6 +117,7 @@ public class PlayerConnector : ScriptableObject
     #region State Machine
 
     [TabGroup("base", "Player Stats"), PropertyOrder(-1)]
+    [PropertyTooltip("The current state the player is in.")]
     public PlayerState playerState;
     public PlayerStates currentPlayerState;
 

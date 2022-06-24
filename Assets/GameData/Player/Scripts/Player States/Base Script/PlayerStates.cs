@@ -101,6 +101,21 @@ public abstract class PlayerStates
     /// </summary>
     public virtual void JumpForce() { }
 
+    /// <summary>
+    /// A template function used by the states to trigger appropaite Left hand attacks.
+    /// </summary>
+    public virtual void LeftHandAttack() { }
+
+    /// <summary>
+    /// A template function used by the states to trigger appropaite Right hand attacks.
+    /// </summary>
+    public virtual void RightHandAttack() { }
+
+    /// <summary>
+    /// A tempalte function used by the states to trigger appropaite Parries or Dual wield attacks.
+    /// </summary>
+    public virtual void ParryDualAttack() { }
+
     #endregion
 
     #region Global Functionality
@@ -179,7 +194,6 @@ public abstract class PlayerStates
         playerConnector.combatMode = !playerConnector.combatMode;
         animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
     }
-
 
     #endregion
 
