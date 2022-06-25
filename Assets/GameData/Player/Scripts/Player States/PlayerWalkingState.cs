@@ -113,4 +113,28 @@ public class PlayerWalkingState : PlayerStates
         playerConnector.currentPlayerState.Init();
     }
 
+    /// <summary>
+    /// Walking state left hand attack function
+    /// </summary>
+    public override void LeftHandAttack()
+    {
+        base.LeftHandAttack();
+    }
+
+    /// <summary>
+    /// Walking state right hand attack function
+    /// </summary>
+    public override void RightHandAttack()
+    {
+        base.RightHandAttack();
+    }
+
+    /// <summary>
+    /// Walking state parry/block/dual wield attack function
+    /// </summary>
+    public override void ParryDualAttack()
+    {
+        base.ParryDualAttack();
+    }
+
 }

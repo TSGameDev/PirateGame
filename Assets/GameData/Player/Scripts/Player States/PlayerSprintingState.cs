@@ -58,7 +58,7 @@ public class PlayerSprintingState : PlayerStates
         else
             ChangePlayerState(PlayerState.Idle);
 
-        playerConnector.stamina = -playerConnector.sprintingStaminaStartCost * Time.deltaTime;
+        //playerConnector.stamina = -playerConnector.sprintingCost * Time.deltaTime;
     }
 
     /// <summary>
@@ -112,6 +112,36 @@ public class PlayerSprintingState : PlayerStates
                 break;
         }
         playerConnector.currentPlayerState.Init();
+    }
+
+
+    /// <summary>
+    /// Sprinting state left hand attack function
+    /// </summary>
+    public override void LeftHandAttack()
+    {
+
+    }
+
+    /// <summary>
+    /// Sprinting state right hand attack function
+    /// </summary>
+    public override void RightHandAttack()
+    {
+        if (playerConnector.movementRaw != new Vector2(0, 1))
+            return;
+
+        Debug.Log(playerConnector.movementRaw);
+        animController.SetTrigger(playerConnector.animRightHandRunningAttack);
+        playerConnector.combatMode = true;
+    }
+
+    /// <summary>
+    /// Sprinting state parry/block/dual wield attack function
+    /// </summary>
+    public override void ParryDualAttack()
+    {
+
     }
 
 }

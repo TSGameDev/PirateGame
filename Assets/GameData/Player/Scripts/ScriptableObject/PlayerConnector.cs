@@ -114,6 +114,19 @@ public class PlayerConnector : ScriptableObject
 
     #endregion
 
+    #region Combat
+    
+    [TabGroup("base", "Combat")]
+    [FoldoutGroup("base/Combat/Combo")]
+    [PropertyTooltip("Bool for timing transitions to combo attacks")]
+    public bool comboPossible = false;
+
+    [FoldoutGroup("base/Combat/Combo")]
+    [PropertyTooltip("The current step/attack number in a combo, Used to track if comboPossible is required to trigger anim.")]
+    public int comboStep = 0;
+
+    #endregion
+
     #region State Machine
 
     [TabGroup("base", "Player Stats"), PropertyOrder(-1)]
@@ -136,13 +149,18 @@ public class PlayerConnector : ScriptableObject
     public readonly int animLandHash = Animator.StringToHash("Land");
     public readonly int animLandRollRun = Animator.StringToHash("LandRollRun");
     public readonly int animDuelWieldAttack = Animator.StringToHash("DualWieldAttack");
+    public readonly int animDuelWieldAttackCombo = Animator.StringToHash("DualWieldAttackCombo");
     public readonly int animParry = Animator.StringToHash("Parry");
     public readonly int animParryHit = Animator.StringToHash("ParryHit");
     public readonly int animLeftHandAttack = Animator.StringToHash("LeftHandAttack");
+    public readonly int animLeftHandAttackCombo = Animator.StringToHash("LeftHandAttackCombo");
     public readonly int animLeftHandRunningAttack = Animator.StringToHash("LeftHandRunningAttack");
     public readonly int animShieldAttack = Animator.StringToHash("ShieldAttack");
+    public readonly int animShieldAttackCombo = Animator.StringToHash("ShieldAttackCombo");
     public readonly int animRightHandAttack = Animator.StringToHash("RightHandAttack");
+    public readonly int animRightHandAttackCombo = Animator.StringToHash("RightHandAttackCombo");
     public readonly int animRightHandRunningAttack = Animator.StringToHash("RightHandRunningAttack");
+    
     #endregion
 
     #region Events

@@ -122,4 +122,28 @@ public class PlayerRunningState : PlayerStates
         playerConnector.currentPlayerState.Init();
     }
 
+    /// <summary>
+    /// Running State left hand attack function
+    /// </summary>
+    public override void LeftHandAttack()
+    {
+        base.LeftHandAttack();
+    }
+
+    /// <summary>
+    /// Running State right hand attack function
+    /// </summary>
+    public override void RightHandAttack()
+    {
+        base.RightHandAttack();
+    }
+
+    /// <summary>
+    /// Running State parry/block/dual wield attack function
+    /// </summary>
+    public override void ParryDualAttack()
+    {
+        base.ParryDualAttack();
+    }
+
 }

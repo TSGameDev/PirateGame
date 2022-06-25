@@ -101,21 +101,28 @@ public class PlayerIdleState : PlayerStates
         playerConnector.currentPlayerState.Init();
     }
 
-
+    /// <summary>
+    /// Idle left hand attack function
+    /// </summary>
     public override void LeftHandAttack()
     {
         base.LeftHandAttack();
     }
 
-
+    /// <summary>
+    /// Idle right hand attack function
+    /// </summary>
     public override void RightHandAttack()
     {
         base.RightHandAttack();
     }
 
-
+    /// <summary>
+    /// idle parry/block/dual wield attack function
+    /// </summary>
     public override void ParryDualAttack()
     {
         base.ParryDualAttack();
     }
+
 }

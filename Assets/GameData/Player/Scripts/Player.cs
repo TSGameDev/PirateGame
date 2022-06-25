@@ -56,5 +56,15 @@ public class Player : MonoBehaviour
         playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Falling);
     }
 
+    public void ComboSetter()
+    {
+        playerConnector.comboPossible = !playerConnector.comboPossible;
+    }
+
+    public void ComboResetter()
+    {
+        playerConnector.comboPossible = false;
+        playerConnector.comboStep = 0;
+    }
 }
 

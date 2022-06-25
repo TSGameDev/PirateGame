@@ -101,21 +101,6 @@ public abstract class PlayerStates
     /// </summary>
     public virtual void JumpForce() { }
 
-    /// <summary>
-    /// A template function used by the states to trigger appropaite Left hand attacks.
-    /// </summary>
-    public virtual void LeftHandAttack() { }
-
-    /// <summary>
-    /// A template function used by the states to trigger appropaite Right hand attacks.
-    /// </summary>
-    public virtual void RightHandAttack() { }
-
-    /// <summary>
-    /// A tempalte function used by the states to trigger appropaite Parries or Dual wield attacks.
-    /// </summary>
-    public virtual void ParryDualAttack() { }
-
     #endregion
 
     #region Global Functionality
@@ -187,13 +172,50 @@ public abstract class PlayerStates
     }
 
     /// <summary>
-    /// Function that transitions animations into combat style.
+    /// A global function that transitions animations into combat style.
     /// </summary>
     public virtual void Combat()
     {
         playerConnector.combatMode = !playerConnector.combatMode;
         animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
     }
+
+    /// <summary>
+    /// A global function used to perform left hand attacks. They are global as the functionlaity is the same for most states.
+    /// </summary>
+    public virtual void LeftHandAttack() { }
+
+    /// <summary>
+    /// A global function used to perform right hand attacks. They are global as the functionlaity is the same for most states.
+    /// </summary>
+    public virtual void RightHandAttack() 
+    {
+
+        switch (playerConnector.comboStep)
+        {
+            case 0:
+                animController.SetTrigger(playerConnector.animRightHandAttack);
+                playerConnector.comboStep++;
+                playerConnector.comboPossible = false;
+                playerConnector.combatMode = true;
+                return;
+            case 1:
+            case 2:
+                if (playerConnector.comboPossible)
+                {
+                    animController.SetTrigger(playerConnector.animRightHandAttackCombo);
+                    playerConnector.comboStep++;
+                    playerConnector.comboPossible = false;
+                    playerConnector.combatMode = true;
+                }
+                return;
+        }
+    }
+
+    /// <summary>
+    /// A global function used to perform parries or dual wield attacks. They are global as the functionlaity is the same for most states.
+    /// </summary>
+    public virtual void ParryDualAttack() { }
 
     #endregion
 
