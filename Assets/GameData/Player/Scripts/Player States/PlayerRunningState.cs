@@ -81,6 +81,30 @@ public class PlayerRunningState : PlayerStates
     }
 
     /// <summary>
+    /// Running State left hand attack function
+    /// </summary>
+    public override void LeftHandAttack()
+    {
+        base.LeftHandAttack();
+    }
+
+    /// <summary>
+    /// Running State right hand attack function
+    /// </summary>
+    public override void RightHandAttack()
+    {
+        base.RightHandAttack();
+    }
+
+    /// <summary>
+    /// Running State parry/block/dual wield attack function
+    /// </summary>
+    public override void ParryDualAttack()
+    {
+        base.ParryDualAttack();
+    }
+
+    /// <summary>
     /// Transitions available from the running state.
     /// </summary>
     /// <param name="playerstate">State to transition into.</param>
@@ -118,32 +142,12 @@ public class PlayerRunningState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerFallingState(player);
                 Debug.Log("Change Player State to Falling");
                 break;
+            case PlayerState.Attack:
+                playerConnector.playerState = PlayerState.Attack;
+                playerConnector.currentPlayerState = new PlayerAttackState(player);
+                Debug.Log("Change Player State to Attack");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
-
-    /// <summary>
-    /// Running State left hand attack function
-    /// </summary>
-    public override void LeftHandAttack()
-    {
-        base.LeftHandAttack();
-    }
-
-    /// <summary>
-    /// Running State right hand attack function
-    /// </summary>
-    public override void RightHandAttack()
-    {
-        base.RightHandAttack();
-    }
-
-    /// <summary>
-    /// Running State parry/block/dual wield attack function
-    /// </summary>
-    public override void ParryDualAttack()
-    {
-        base.ParryDualAttack();
-    }
-
 }

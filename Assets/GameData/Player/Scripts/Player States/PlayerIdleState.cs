@@ -59,6 +59,30 @@ public class PlayerIdleState : PlayerStates
     }
 
     /// <summary>
+    /// Idle left hand attack function
+    /// </summary>
+    public override void LeftHandAttack()
+    {
+        base.LeftHandAttack();
+    }
+
+    /// <summary>
+    /// Idle right hand attack function
+    /// </summary>
+    public override void RightHandAttack()
+    {
+        base.RightHandAttack();
+    }
+
+    /// <summary>
+    /// idle parry/block/dual wield attack function
+    /// </summary>
+    public override void ParryDualAttack()
+    {
+        base.ParryDualAttack();
+    }
+
+    /// <summary>
     /// available transitons for the idle state.
     /// </summary>
     /// <param name="playerstate">State to transiton into. </param>
@@ -96,33 +120,13 @@ public class PlayerIdleState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerFallingState(player);
                 Debug.Log("Change Player State to Falling");
                 break;
-
+            case PlayerState.Attack:
+                playerConnector.playerState = PlayerState.Attack;
+                playerConnector.currentPlayerState = new PlayerAttackState(player);
+                Debug.Log("Change Player State to Attack");
+                break;
         }
         playerConnector.currentPlayerState.Init();
-    }
-
-    /// <summary>
-    /// Idle left hand attack function
-    /// </summary>
-    public override void LeftHandAttack()
-    {
-        base.LeftHandAttack();
-    }
-
-    /// <summary>
-    /// Idle right hand attack function
-    /// </summary>
-    public override void RightHandAttack()
-    {
-        base.RightHandAttack();
-    }
-
-    /// <summary>
-    /// idle parry/block/dual wield attack function
-    /// </summary>
-    public override void ParryDualAttack()
-    {
-        base.ParryDualAttack();
     }
 
 }

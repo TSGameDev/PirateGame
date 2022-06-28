@@ -133,6 +133,14 @@ public class PlayerConnector : ScriptableObject
     [PropertyTooltip("A bool flag to know if a running attack is left handed")]
     public bool leftHandRunningAttack = false;
 
+    [FoldoutGroup("base/Combat/Combat Flags")]
+    [PropertyTooltip("A bool flag to know if a attack is left handed")]
+    public bool leftHandAttack = false;
+
+    [FoldoutGroup("base/Combat/Combat Flags")]
+    [PropertyTooltip("A bool flag to know if a attack is right handed")]
+    public bool rightHandAttack = false;
+
     #endregion
 
     #region State Machine

@@ -9,7 +9,8 @@ public enum PlayerState
     Crouching,
     Jump,
     Falling,
-    RunningAttack
+    RunningAttack,
+    Attack
 }
 
 public abstract class PlayerStates
@@ -186,26 +187,8 @@ public abstract class PlayerStates
     /// </summary>
     public virtual void LeftHandAttack() 
     {
-        switch (playerConnector.comboStep)
-        {
-            case 0:
-                animController.SetTrigger(playerConnector.animLeftHandAttack);
-                playerConnector.comboStep++;
-                playerConnector.comboPossible = false;
-                playerConnector.combatMode = true;
-                animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
-                return;
-            case 1:
-                if (playerConnector.comboPossible)
-                {
-                    animController.SetTrigger(playerConnector.animLeftHandAttackCombo);
-                    playerConnector.comboStep++;
-                    playerConnector.comboPossible = false;
-                    playerConnector.combatMode = true;
-                    animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
-                }
-                return;
-        }
+        ChangePlayerState(PlayerState.Attack);
+        playerConnector.leftHandAttack = true;
     }
 
     /// <summary>
@@ -213,27 +196,8 @@ public abstract class PlayerStates
     /// </summary>
     public virtual void RightHandAttack() 
     {
-        switch (playerConnector.comboStep)
-        {
-            case 0:
-                animController.SetTrigger(playerConnector.animRightHandAttack);
-                playerConnector.comboStep++;
-                playerConnector.comboPossible = false;
-                playerConnector.combatMode = true;
-                animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
-                return;
-            case 1:
-            case 2:
-                if (playerConnector.comboPossible)
-                {
-                    animController.SetTrigger(playerConnector.animRightHandAttackCombo);
-                    playerConnector.comboStep++;
-                    playerConnector.comboPossible = false;
-                    playerConnector.combatMode = true;
-                    animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
-                }
-                return;
-        }
+        ChangePlayerState(PlayerState.Attack);
+        playerConnector.rightHandAttack = true;
     }
 
     /// <summary>

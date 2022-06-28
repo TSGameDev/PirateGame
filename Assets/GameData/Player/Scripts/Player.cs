@@ -71,6 +71,8 @@ public class Player : MonoBehaviour
     {
         playerConnector.comboPossible = false;
         playerConnector.comboStep = 0;
+        playerConnector.walkMode = false;
+        playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Idle);
     }
 
     /// <summary>

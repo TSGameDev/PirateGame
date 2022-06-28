@@ -37,4 +37,6 @@ MonoBehaviour:
   comboStep: 0
   rightHandRunningAttack: 0
   leftHandRunningAttack: 0
+  leftHandAttack: 0
+  rightHandAttack: 1
   playerState: 0
