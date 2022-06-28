@@ -78,6 +78,38 @@ public class PlayerSprintingState : PlayerStates
     }
 
     /// <summary>
+    /// Sprinting state left hand attack function
+    /// </summary>
+    public override void LeftHandAttack()
+    {
+        if (playerConnector.movementRaw != new Vector2(0, 1))
+            return;
+
+        playerConnector.leftHandRunningAttack = true;
+        ChangePlayerState(PlayerState.RunningAttack);
+    }
+
+    /// <summary>
+    /// Sprinting state right hand attack function
+    /// </summary>
+    public override void RightHandAttack()
+    {
+        if (playerConnector.movementRaw != new Vector2(0, 1))
+            return;
+
+        playerConnector.rightHandRunningAttack = true;
+        ChangePlayerState(PlayerState.RunningAttack);
+    }
+
+    /// <summary>
+    /// Sprinting state parry/block/dual wield attack function
+    /// </summary>
+    public override void ParryDualAttack()
+    {
+
+    }
+
+    /// <summary>
     /// The transitions available for the sprinting state.
     /// </summary>
     /// <param name="playerstate">The state to transition into.</param>
@@ -110,38 +142,12 @@ public class PlayerSprintingState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerFallingState(player);
                 Debug.Log("Change Player State to Falling");
                 break;
+            case PlayerState.RunningAttack:
+                playerConnector.playerState = PlayerState.RunningAttack;
+                playerConnector.currentPlayerState = new PlayerRunningAttackState(player);
+                Debug.Log("Change Player State to Running Attack");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
-
-
-    /// <summary>
-    /// Sprinting state left hand attack function
-    /// </summary>
-    public override void LeftHandAttack()
-    {
-
-    }
-
-    /// <summary>
-    /// Sprinting state right hand attack function
-    /// </summary>
-    public override void RightHandAttack()
-    {
-        if (playerConnector.movementRaw != new Vector2(0, 1))
-            return;
-
-        Debug.Log(playerConnector.movementRaw);
-        animController.SetTrigger(playerConnector.animRightHandRunningAttack);
-        playerConnector.combatMode = true;
-    }
-
-    /// <summary>
-    /// Sprinting state parry/block/dual wield attack function
-    /// </summary>
-    public override void ParryDualAttack()
-    {
-
-    }
-
 }

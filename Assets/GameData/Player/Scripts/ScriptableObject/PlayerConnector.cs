@@ -125,6 +125,14 @@ public class PlayerConnector : ScriptableObject
     [PropertyTooltip("The current step/attack number in a combo, Used to track if comboPossible is required to trigger anim.")]
     public int comboStep = 0;
 
+    [FoldoutGroup("base/Combat/Combat Flags")]
+    [PropertyTooltip("A bool flag to know if a running attack is right handed.")]
+    public bool rightHandRunningAttack = false;
+
+    [FoldoutGroup("base/Combat/Combat Flags")]
+    [PropertyTooltip("A bool flag to know if a running attack is left handed")]
+    public bool leftHandRunningAttack = false;
+
     #endregion
 
     #region State Machine

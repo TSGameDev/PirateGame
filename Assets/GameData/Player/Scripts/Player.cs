@@ -56,15 +56,31 @@ public class Player : MonoBehaviour
         playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Falling);
     }
 
+    /// <summary>
+    /// Function that increase the combo set for attack combos
+    /// </summary>
     public void ComboSetter()
     {
         playerConnector.comboPossible = !playerConnector.comboPossible;
     }
 
+    /// <summary>
+    /// Function that resets the combo set and toggle.
+    /// </summary>
     public void ComboResetter()
     {
         playerConnector.comboPossible = false;
         playerConnector.comboStep = 0;
+    }
+
+    /// <summary>
+    /// Function for transitioning out of running attack state and resetting toggles.
+    /// </summary>
+    public void RunningAttackResetter()
+    {
+        playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Idle);
+        playerConnector.rightHandRunningAttack = false;
+        playerConnector.leftHandRunningAttack = false;
     }
 }
 

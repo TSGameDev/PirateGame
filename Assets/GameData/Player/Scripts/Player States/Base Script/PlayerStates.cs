@@ -8,7 +8,8 @@ public enum PlayerState
     Sprinting,
     Crouching,
     Jump,
-    Falling
+    Falling,
+    RunningAttack
 }
 
 public abstract class PlayerStates
@@ -183,14 +184,35 @@ public abstract class PlayerStates
     /// <summary>
     /// A global function used to perform left hand attacks. They are global as the functionlaity is the same for most states.
     /// </summary>
-    public virtual void LeftHandAttack() { }
+    public virtual void LeftHandAttack() 
+    {
+        switch (playerConnector.comboStep)
+        {
+            case 0:
+                animController.SetTrigger(playerConnector.animLeftHandAttack);
+                playerConnector.comboStep++;
+                playerConnector.comboPossible = false;
+                playerConnector.combatMode = true;
+                animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
+                return;
+            case 1:
+                if (playerConnector.comboPossible)
+                {
+                    animController.SetTrigger(playerConnector.animLeftHandAttackCombo);
+                    playerConnector.comboStep++;
+                    playerConnector.comboPossible = false;
+                    playerConnector.combatMode = true;
+                    animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
+                }
+                return;
+        }
+    }
 
     /// <summary>
     /// A global function used to perform right hand attacks. They are global as the functionlaity is the same for most states.
     /// </summary>
     public virtual void RightHandAttack() 
     {
-
         switch (playerConnector.comboStep)
         {
             case 0:
@@ -198,6 +220,7 @@ public abstract class PlayerStates
                 playerConnector.comboStep++;
                 playerConnector.comboPossible = false;
                 playerConnector.combatMode = true;
+                animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
                 return;
             case 1:
             case 2:
@@ -207,6 +230,7 @@ public abstract class PlayerStates
                     playerConnector.comboStep++;
                     playerConnector.comboPossible = false;
                     playerConnector.combatMode = true;
+                    animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
                 }
                 return;
         }
@@ -215,7 +239,10 @@ public abstract class PlayerStates
     /// <summary>
     /// A global function used to perform parries or dual wield attacks. They are global as the functionlaity is the same for most states.
     /// </summary>
-    public virtual void ParryDualAttack() { }
+    public virtual void ParryDualAttack() 
+    {
+
+    }
 
     #endregion
 
