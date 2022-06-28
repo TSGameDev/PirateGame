@@ -38,5 +38,5 @@ MonoBehaviour:
   rightHandRunningAttack: 0
   leftHandRunningAttack: 0
   leftHandAttack: 0
-  rightHandAttack: 1
+  rightHandAttack: 0
   playerState: 0
