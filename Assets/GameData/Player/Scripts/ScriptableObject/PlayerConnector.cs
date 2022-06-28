@@ -141,6 +141,10 @@ public class PlayerConnector : ScriptableObject
     [PropertyTooltip("A bool flag to know if a attack is right handed")]
     public bool rightHandAttack = false;
 
+    //[FoldoutGroup("base/Combat/Player Weapons")]
+    //[PropertyTooltip("bools currently used to represent different weapons equiped")]
+
+
     #endregion
 
     #region State Machine

@@ -10,7 +10,8 @@ public enum PlayerState
     Jump,
     Falling,
     RunningAttack,
-    Attack
+    Attack,
+    Parry
 }
 
 public abstract class PlayerStates
@@ -205,7 +206,7 @@ public abstract class PlayerStates
     /// </summary>
     public virtual void ParryDualAttack() 
     {
-
+        ChangePlayerState(PlayerState.Parry);
     }
 
     #endregion

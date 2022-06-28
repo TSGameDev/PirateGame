@@ -147,6 +147,11 @@ public class PlayerSprintingState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerRunningAttackState(player);
                 Debug.Log("Change Player State to Running Attack");
                 break;
+            case PlayerState.Parry:
+                playerConnector.playerState = PlayerState.Parry;
+                playerConnector.currentPlayerState = new PlayerParryDualWeildState(player);
+                Debug.Log("Change Player State to Parry");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }

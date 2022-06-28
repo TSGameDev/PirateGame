@@ -138,6 +138,11 @@ public class PlayerWalkingState : PlayerStates
                 playerConnector.currentPlayerState = new PlayerAttackState(player);
                 Debug.Log("Change Player State to Attack");
                 break;
+            case PlayerState.Parry:
+                playerConnector.playerState = PlayerState.Parry;
+                playerConnector.currentPlayerState = new PlayerParryDualWeildState(player);
+                Debug.Log("Change Player State to Parry");
+                break;
         }
         playerConnector.currentPlayerState.Init();
     }
