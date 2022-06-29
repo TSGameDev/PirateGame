@@ -188,8 +188,8 @@ public abstract class PlayerStates
     /// </summary>
     public virtual void LeftHandAttack() 
     {
-        ChangePlayerState(PlayerState.Attack);
         playerConnector.leftHandAttack = true;
+        ChangePlayerState(PlayerState.Attack);
     }
 
     /// <summary>
@@ -197,8 +197,8 @@ public abstract class PlayerStates
     /// </summary>
     public virtual void RightHandAttack() 
     {
-        ChangePlayerState(PlayerState.Attack);
         playerConnector.rightHandAttack = true;
+        ChangePlayerState(PlayerState.Attack);
     }
 
     /// <summary>

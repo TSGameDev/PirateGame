@@ -73,6 +73,8 @@ public class Player : MonoBehaviour
         playerConnector.comboStep = 0;
         playerConnector.walkMode = false;
         playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Idle);
+        playerConnector.rightHandAttack = false;
+        playerConnector.leftHandAttack = false;
     }
 
     /// <summary>
@@ -83,6 +85,22 @@ public class Player : MonoBehaviour
         playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Idle);
         playerConnector.rightHandRunningAttack = false;
         playerConnector.leftHandRunningAttack = false;
+    }
+
+    /// <summary>
+    /// Function to call when player is hit when parrying
+    /// </summary>
+    public void ParryHit()
+    {
+
+    }
+
+    /// <summary>
+    /// Function to call when the parry animations ends.
+    /// </summary>
+    public void ParryReturn()
+    {
+        playerConnector.currentPlayerState.ChangePlayerState(PlayerState.Idle);
     }
 }
 

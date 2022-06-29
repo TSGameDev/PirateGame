@@ -8,6 +8,8 @@ public class PlayerParryDualWeildState : PlayerStates
 
     public override void Init()
     {
+        animController.SetFloat(playerConnector.animMovementXHash, 0);
+        animController.SetFloat(playerConnector.animMovementXHash, 0);
         ParryDualAttack();
     }
 
@@ -18,25 +20,40 @@ public class PlayerParryDualWeildState : PlayerStates
 
     public override void ParryDualAttack()
     {
-        switch(playerConnector.comboStep)
+        if(playerConnector.dualWeildEquiped)
         {
-            case 0:
-                animController.SetTrigger(playerConnector.animDuelWieldAttack);
-                playerConnector.comboStep++;
-                playerConnector.comboPossible = false;
-                playerConnector.combatMode = true;
-                animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
-                return;
-            case 1:
-                if (playerConnector.comboPossible)
-                {
-                    animController.SetTrigger(playerConnector.animDuelWieldAttackCombo);
+            switch (playerConnector.comboStep)
+            {
+                case 0:
+                    animController.SetTrigger(playerConnector.animDuelWieldAttack);
                     playerConnector.comboStep++;
                     playerConnector.comboPossible = false;
                     playerConnector.combatMode = true;
                     animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
-                }
-                return;
+                    return;
+                case 1:
+                    if (playerConnector.comboPossible)
+                    {
+                        animController.SetTrigger(playerConnector.animDuelWieldAttackCombo);
+                        playerConnector.comboStep++;
+                        playerConnector.comboPossible = false;
+                        playerConnector.combatMode = true;
+                        animController.SetBool(playerConnector.animCombatBool, playerConnector.combatMode);
+                    }
+                    return;
+            }
+        }
+
+        else if(playerConnector.shieldEquiped)
+        {
+            animController.SetTrigger(playerConnector.animShieldParry);
+            playerConnector.combatMode = true;
+        }
+
+        else
+        {
+            animController.SetTrigger(playerConnector.animParry);
+            playerConnector.combatMode = true;
         }
     }
 
@@ -55,6 +72,7 @@ public class PlayerParryDualWeildState : PlayerStates
                 Debug.Log("Changed Player State to Idle");
                 break;
         }
+        playerConnector.currentPlayerState.Init();
     }
 
 }

@@ -141,8 +141,13 @@ public class PlayerConnector : ScriptableObject
     [PropertyTooltip("A bool flag to know if a attack is right handed")]
     public bool rightHandAttack = false;
 
-    //[FoldoutGroup("base/Combat/Player Weapons")]
-    //[PropertyTooltip("bools currently used to represent different weapons equiped")]
+    [FoldoutGroup("base/Combat/Player Weapons")]
+    [PropertyTooltip("bools currently used to represent different weapons equiped")]
+    public bool dualWeildEquiped = false;
+
+    [FoldoutGroup("base/Combat/Player Weapons")]
+    [PropertyTooltip("bools currently used to represent different weapons equiped")]
+    public bool shieldEquiped = false;
 
 
     #endregion
@@ -171,6 +176,7 @@ public class PlayerConnector : ScriptableObject
     public readonly int animDuelWieldAttack = Animator.StringToHash("DualWieldAttack");
     public readonly int animDuelWieldAttackCombo = Animator.StringToHash("DualWieldAttackCombo");
     public readonly int animParry = Animator.StringToHash("Parry");
+    public readonly int animShieldParry = Animator.StringToHash("ShieldParry");
     public readonly int animParryHit = Animator.StringToHash("ParryHit");
     public readonly int animLeftHandAttack = Animator.StringToHash("LeftHandAttack");
     public readonly int animLeftHandAttackCombo = Animator.StringToHash("LeftHandAttackCombo");
