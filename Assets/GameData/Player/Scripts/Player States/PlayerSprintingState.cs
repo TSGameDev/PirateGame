@@ -47,8 +47,8 @@ public class PlayerSprintingState : PlayerStates
         float rawX = playerConnector.movementRaw.x;
         float rawY = playerConnector.movementRaw.y;
 
-        animController.SetFloat(playerConnector.animMovementXHash, rawX);
-        animController.SetFloat(playerConnector.animMovementYHash, rawY);
+        animController.SetFloat(playerConnector.animMovementXHash, rawX, 0.1f, Time.deltaTime);
+        animController.SetFloat(playerConnector.animMovementYHash, rawY, 0.1f, Time.deltaTime);
 
         movement = (player.transform.right * rawX) + (player.transform.forward * rawY);
         movement = movement.normalized * playerConnector.sprintSpeed * Time.deltaTime;

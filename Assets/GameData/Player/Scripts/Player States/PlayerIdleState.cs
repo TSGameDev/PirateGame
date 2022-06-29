@@ -13,6 +13,8 @@ public class PlayerIdleState : PlayerStates
     /// </summary>
     public override void Init()
     {
+        animController.SetFloat(playerConnector.animMovementXHash, 0f);
+        animController.SetFloat(playerConnector.animMovementYHash, 0f);
         animController.SetBool(playerConnector.animCrouchBool, false);
         Movement();
     }
