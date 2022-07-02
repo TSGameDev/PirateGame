@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerParryDualWeildState : PlayerStates
+public class PlayerParryState : PlayerStates
 {
-    public PlayerParryDualWeildState(Player player) : base(player) { }
+    public PlayerParryState(Player player) : base(player) { }
 
     public override void Init()
     {
@@ -42,12 +42,6 @@ public class PlayerParryDualWeildState : PlayerStates
                     }
                     return;
             }
-        }
-
-        else if(playerConnector.shieldEquiped)
-        {
-            animController.SetTrigger(playerConnector.animShieldParry);
-            playerConnector.combatMode = true;
         }
 
         else

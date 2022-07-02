@@ -176,13 +176,10 @@ public class PlayerConnector : ScriptableObject
     public readonly int animDuelWieldAttack = Animator.StringToHash("DualWieldAttack");
     public readonly int animDuelWieldAttackCombo = Animator.StringToHash("DualWieldAttackCombo");
     public readonly int animParry = Animator.StringToHash("Parry");
-    public readonly int animShieldParry = Animator.StringToHash("ShieldParry");
     public readonly int animParryHit = Animator.StringToHash("ParryHit");
     public readonly int animLeftHandAttack = Animator.StringToHash("LeftHandAttack");
     public readonly int animLeftHandAttackCombo = Animator.StringToHash("LeftHandAttackCombo");
     public readonly int animLeftHandRunningAttack = Animator.StringToHash("LeftHandRunningAttack");
-    public readonly int animShieldAttack = Animator.StringToHash("ShieldAttack");
-    public readonly int animShieldAttackCombo = Animator.StringToHash("ShieldAttackCombo");
     public readonly int animRightHandAttack = Animator.StringToHash("RightHandAttack");
     public readonly int animRightHandAttackCombo = Animator.StringToHash("RightHandAttackCombo");
     public readonly int animRightHandRunningAttack = Animator.StringToHash("RightHandRunningAttack");

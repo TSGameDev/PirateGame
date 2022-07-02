@@ -40,5 +40,5 @@ MonoBehaviour:
   leftHandAttack: 0
   rightHandAttack: 0
   dualWeildEquiped: 0
-  shieldEquiped: 1
+  shieldEquiped: 0
   playerState: 0
